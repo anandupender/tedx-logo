@@ -1,0 +1,67 @@
+@font-face {
+    font-family: 'Helvetica';
+    font-weight: normal;
+    src: url('../assets/helvetica.otf');
+}
+
+@font-face {
+    font-family: 'Helvetica';
+    font-weight: bold;
+    src: url('../assets/helvetica-bold.otf');
+}
+
+
+body{
+    margin:none;
+    display:flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    font-family: Helvetica;
+}
+
+input#eventName{
+    margin-top:100px;
+    font-size: 18px;
+    padding:10px;
+    width:350px;
+    font-family: Helvetica;
+    font-weight: bold;
+}
+
+#modifiers{
+    display: flex;
+    flex-direction: row;
+    margin-top: 10px;
+}
+
+label{
+    margin-right:20px;
+}
+
+canvas{
+    margin-top:20px;
+}
+
+#tipBox{
+    margin-top:20px;
+    transition: opacity .25s ease-in-out;
+}
+
+button {
+    background-color: #000; /* Green */
+    border: none;
+    color: white;
+    padding: 15px 32px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin-top:20px;
+  }
+  #saveButton{
+      display:none;
+  }
+  button:hover{
+      cursor: pointer;
+  }
