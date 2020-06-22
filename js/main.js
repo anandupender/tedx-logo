@@ -1,17 +1,21 @@
 let input = document.querySelector('#eventName');
 let globalEventModifier = "";
-input.addEventListener('input', () => updateValue(input.value));
 
 let tipBox = document.querySelector("#tipBox");
 let tipMultiWord = "Tip: Multi-word event names start on the second line";
 let tipWordWrap = "Tip: When the name gets too long, it wraps to the next line";
 let tipFinal = "Tip: There can be a max of three lines of event name text";
 let tipLong = "Tip: The first word can have 15 characters maximum";
+let tipTooLong = "Tip: A single word cannot exceed the max width of the box";
+
+let demoNames = ["Sydney","Grand Rapids","International School of Hyderabad", "Secretaria De Educacion Del Estado De Zacatecas"];
+var demoCounter = 0;
+var demoToggle = true;
 
 let canvasWidth = 2920;
 let canvasHeight = 1200;
 let scaleFactor = 4;
-let canvasMargin = 20;
+let canvasMargin = 10;
 
 var canvas = document.querySelector('#canvas');
 canvas.width = canvasWidth;
@@ -22,8 +26,8 @@ var ctx = canvas.getContext("2d");
 ctx.scale(scaleFactor,scaleFactor);
 ctx.font = "normal 69px Helvetica";
 
-let logo = new Image();
-logo.src = '../assets/logo.png';
+var logo = new Image();
+logo.src = 'assets/logo.png';
 let xPos,yPos = 50;
 let imageHeight = 50;
 let imageWidth = imageHeight * logo.width / logo.height;
@@ -32,72 +36,90 @@ let letterXHeight = 20;
 let xHeight = 50;
 let innerBoxHeight = imageHeight + (3*letterXHeight) + (3*xHeight);
 
+input.addEventListener('input', () => {
+    input.value = input.value.replace(/[^a-zA-Z ]/g, "")    //do not allow special characters
+    if(input.value != ""){
+        demoToggle = false; 
+    }
+    updateValue(input.value);
+});
+
 function updateValue(userInput){
     userInput += " " + globalEventModifier;
-    console.log(userInput);
 
     document.querySelector("#saveButton").style.display = "block";
     ctx.clearRect(0,0,canvas.clientWidth,canvas.height); //clear screen
 
-    ctx.fillStyle = "#EEE";
-    ctx.fillRect(0, 0, canvas.width, canvas.height); //draw boundary margin box
-
-    ctx.fillStyle = "#FFF";
-    ctx.fillRect(canvasMargin, canvasMargin, imageWidth * 4, innerBoxHeight);// draw writing area
+    // ctx.fillStyle = "#FFF";
+    // ctx.fillRect(canvasMargin, canvasMargin, imageWidth * 4, innerBoxHeight);// draw writing area
 
     ctx.drawImage(logo, canvasMargin, canvasMargin,imageWidth,imageHeight);
 
     ctx.fillStyle = "black";
     let newLines = checkAndSplitWords(userInput);
 
-    for(let currLine = 0; currLine < newLines.length;currLine++){
+    if(newLines != null){
 
-        //if there is a modifier, bold it!
-        if(globalEventModifier != "" && currLine == newLines.length - 1){
-            let splitWords = newLines[currLine].split(" ");
-            console.log(splitWords);
-            let writtenWords = "";
-            for(let i = 0; i < splitWords.length;i++){
-                let prevWidth = ctx.measureText(writtenWords).width; //calculate width before changing font
-                if(i == splitWords.length - 1) { //bold last one!
-                    ctx.font = "bold 69px Helvetica";
+        for(let currLine = 0; currLine < newLines.length;currLine++){
+
+            //if there is a modifier, bold it!
+            if(demoToggle){
+                ctx.fillStyle = "#e5e5e5";
+            }else{
+                ctx.fillStyle = "#000000";
+            }
+            if(globalEventModifier != "" && currLine == newLines.length - 1){
+                let splitWords = newLines[currLine].split(" ");
+                let writtenWords = "";
+                for(let i = 0; i < splitWords.length;i++){
+                    let prevWidth = ctx.measureText(writtenWords).width; //calculate width before changing font
+                    if(i == splitWords.length - 1) { //bold last one!
+                        ctx.font = "bold 69px Helvetica";
+                    }else{
+                        ctx.font = "normal 69px Helvetica";
+                        splitWords[i] += " ";
+                    }
+                    if(splitWords.length == 2 && newLines[currLine].length < 15 && newLines.length == 1){ //only two words and less than 15 characters, put on first line
+                        ctx.fillText(splitWords[i], canvasMargin + imageWidth + logoRightSpace + prevWidth, canvasMargin + imageHeight);
+                    }
+                    else{
+                        ctx.fillText(splitWords[i], canvasMargin + prevWidth, canvasMargin + imageHeight + ((letterXHeight + xHeight)*(currLine+1)));
+                    }
+                    writtenWords+=splitWords[i];
+                }
+            }else{
+                if(userInput.trim().indexOf(' ') != -1){ // multiple words
+                    ctx.font = "normal 69px Helvetica";
+                    ctx.fillText(newLines[currLine], canvasMargin, canvasMargin + imageHeight + ((letterXHeight + xHeight)*(currLine+1)));
                 }else{
                     ctx.font = "normal 69px Helvetica";
-                    splitWords[i] += " ";
+                    if(newLines[currLine].length < 15){
+                        ctx.fillText(newLines[currLine], canvasMargin + imageWidth + logoRightSpace, canvasMargin + imageHeight);
+                    }else{
+                        ctx.fillText(newLines[currLine], canvasMargin, canvasMargin + imageHeight + ((letterXHeight + xHeight)*(currLine+1)));
+                    }
                 }
-                if(splitWords.length == 2 && newLines[currLine].length < 15){ //only two words and less than 15 characters, put on first line
-                    ctx.fillText(splitWords[i], canvasMargin + imageWidth + logoRightSpace + prevWidth, canvasMargin + imageHeight);
-                }
-                else{
-                    ctx.fillText(splitWords[i], canvasMargin + prevWidth, canvasMargin + imageHeight + ((letterXHeight + xHeight)*(currLine+1)));
-                }
-                writtenWords+=splitWords[i];
+                
             }
-        }else{
-            if(userInput.trim().indexOf(' ') != -1){ // multiple words
-                ctx.font = "normal 69px Helvetica";
-                ctx.fillText(newLines[currLine], canvasMargin, canvasMargin + imageHeight + ((letterXHeight + xHeight)*(currLine+1)));
-            }else{
-                ctx.font = "normal 69px Helvetica";
-                if(newLines[currLine].length < 15){
-                    ctx.fillText(newLines[currLine], canvasMargin + imageWidth + logoRightSpace, canvasMargin + imageHeight);
-                }else{
-                    ctx.fillText(newLines[currLine], canvasMargin, canvasMargin + imageHeight + ((letterXHeight + xHeight)*(currLine+1)));
-                }
-            }
-            
-        }
 
+        }
     }
-    let futureTip;
-    if(newLines.length == 1){
-        futureTip = tipMultiWord;
-    }else if(newLines.length == 2){
-        futureTip = tipWordWrap;
-    }else if(newLines.length == 3){
-        futureTip = tipFinal;
+
+    if(!demoToggle){
+        let futureTip;
+        if(newLines == null){
+            futureTip = tipTooLong;
+        }else if(newLines.length == 1 && newLines[0].split(" ").length > 1 && globalEventModifier==""){
+            futureTip = tipMultiWord;
+        }else if(newLines.length == 2){
+            futureTip = tipWordWrap;
+        }else if(newLines.length == 3){
+            futureTip = tipFinal;
+        }else{
+            futureTip = "";
+        }
+        showTip(futureTip);
     }
-    showTip(futureTip);
 }
 
 function checkAndSplitWords(fullWord){
@@ -137,6 +159,7 @@ function checkAndSplitWords(fullWord){
             }
         }else{  //word is just too long in general even for a full line!
             console.log("too long");
+            toReturn = null;
             break;
         }
     }
@@ -146,11 +169,16 @@ function checkAndSplitWords(fullWord){
 }
 
 function saveImage(){
-    image = canvas.toDataURL("image/png", .1);
-    var link = document.createElement('a');
-    link.download = "myNewTEDxLogo.png";
-    link.href = image;
-    link.click();
+    if(input.value != ""){
+        image = canvas.toDataURL("image/png", .1);
+        var link = document.createElement('a');
+        link.download = "myNewTEDxLogo.png";
+        link.href = image;
+        link.click();
+        alert("Congratulations! You're one step closer to running your TEDx event!");
+    }else{
+        alert("Hold your horses! You can download your logos after entering your event name.");
+    }
 }
 
 // Allow for radio buttons to be unchecked!
@@ -162,14 +190,10 @@ for(var i = 0; i < options.length;i++){
             globalEventModifier = "";
         }else{
             globalEventModifier = this.value.charAt(0).toUpperCase() +  this.value.slice(1);
-
         }
-        //if(input.value){
-        updateValue(input.value);
-        // }else{
-        //     globalEventModifier = "";
-        //     updateValue("");
-        // }
+        if(input.value){
+            updateValue(input.value);
+        }
         this.previous = this.checked;        
     }
 }
@@ -188,6 +212,49 @@ function showTip(tip){
     }
 }
 
+updateValue("");
+
+// FEATURE: SHOW PLACEHOLDER NAMES
+
+window.setInterval(function(){
+    showPlaceholderExamples();
+},2500);
+
+function showPlaceholderExamples(){
+    if((input.value == "" || input.value == " ") && testWordInput == ""){
+        demoToggle = true;
+        updateValue(demoNames[demoCounter]);
+        demoCounter++;
+        if(demoCounter == demoNames.length){
+            demoCounter = 0;
+        }
+    }else{
+        demoToggle = false;
+    }
+}
+
+// COOL CODE THAT ALLOWS YOU TO TYPE DIRECTLY ON THE CANVAS IMAGE
+let testWordInput = "";
+updateValue(testWordInput);
+
+// Ability to start this demo mode from console if I want
+function startDemo(){
+    window.addEventListener("keydown", function (event) {
+        if (event.defaultPrevented) {
+          return; // Do nothing if the event was already processed
+        }
+        if(event.key.length == 1){
+            testWordInput+=event.key;
+        }else if(event.key == "Backspace"){
+            testWordInput = testWordInput.substring(0, testWordInput.length - 1);
+        }
+        demoToggle = false;
+        updateValue(testWordInput);
+    
+        console.log(testWordInput);
+    }, true);
+}
+
 // const metrics = FontMetrics({
 //     fontFamily: 'Helvetica',
 //     fontWeight: 'normal',
@@ -197,26 +264,12 @@ function showTip(tip){
 //   console.log(metrics);
 
 //Real ToDos
-// make first push to github!
 // crop the saved canvas image as to not include white space - OR redraw canvas size as it changes!
-//get real Helvetica file, font weight
-//fix all alignments with proper x-height stuff
-//get real TED logo
-//add modifiers
-//fix way too many characters edge case 
-// dont allow TEDxYouth without any words typed
+// get real Helvetica file, font weight
+// fix all alignments with proper x-height stuff
+// get real TED logo
 // comment all code
-//optimize code
-
-//Make it look Real ToDos
-// add TED legal Footer
-//link back to the TED site
-//
-
-//Ideas ToDo
-// Validation as to not allow special characters
-//tips as to show the rules
-//special styling checks like make sure each word is capitalized
+// optimize code
 
 
 
