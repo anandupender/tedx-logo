@@ -319,3 +319,20 @@ button {
     transform-origin: 100%;
     transform:rotate(90deg);
 }
+
+.demo{
+    position: fixed;
+    bottom:0px;
+    right: 0px;
+    padding:12px;
+    font-size: 12px;
+    font-weight: bold;
+    color:var(--white);
+    background-color: var(--black);
+    z-index: 1000;
+    border-top-left-radius: 5px;
+
+    a{
+        color:var(--white) !important;
+    }
+}

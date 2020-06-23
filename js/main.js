@@ -1,4 +1,6 @@
 let input = document.querySelector('#eventName');
+var currContentHeight;
+var currContentWidth;
 let globalEventModifier = "";
 
 let tipBox = document.querySelector("#tipBox");
@@ -15,7 +17,7 @@ var demoToggle = true;
 let canvasWidth = 2920;
 let canvasHeight = 1200;
 let scaleFactor = 4;
-let canvasMargin = 10;
+let canvasMargin = 30;
 
 var canvas = document.querySelector('#canvas');
 canvas.width = canvasWidth;
@@ -50,8 +52,8 @@ function updateValue(userInput){
     document.querySelector("#saveButton").style.display = "block";
     ctx.clearRect(0,0,canvas.clientWidth,canvas.height); //clear screen
 
-    // ctx.fillStyle = "#FFF";
-    // ctx.fillRect(canvasMargin, canvasMargin, imageWidth * 4, innerBoxHeight);// draw writing area
+    ctx.fillStyle = "#FFF";
+    ctx.fillRect(0, 0, canvas.width, canvas.height);// canvas
 
     ctx.drawImage(logo, canvasMargin, canvasMargin,imageWidth,imageHeight);
 
@@ -59,7 +61,8 @@ function updateValue(userInput){
     let newLines = checkAndSplitWords(userInput);
 
     if(newLines != null){
-
+        let maxWidth = 0;
+        let maxHeight = 0;
         for(let currLine = 0; currLine < newLines.length;currLine++){
 
             //if there is a modifier, bold it!
@@ -68,6 +71,7 @@ function updateValue(userInput){
             }else{
                 ctx.fillStyle = "#000000";
             }
+
             if(globalEventModifier != "" && currLine == newLines.length - 1){
                 let splitWords = newLines[currLine].split(" ");
                 let writtenWords = "";
@@ -79,30 +83,52 @@ function updateValue(userInput){
                         ctx.font = "normal 69px Helvetica";
                         splitWords[i] += " ";
                     }
-                    if(splitWords.length == 2 && newLines[currLine].length < 15 && newLines.length == 1){ //only two words and less than 15 characters, put on first line
-                        ctx.fillText(splitWords[i], canvasMargin + imageWidth + logoRightSpace + prevWidth, canvasMargin + imageHeight);
+
+                    let xAdder = 0;
+                    let yAdder = 0;
+                    if(splitWords.length == 2 && newLines[currLine].length < 15  && newLines.length == 1){ //only two words and less than 15 characters, put on first line
+                        xAdder = imageWidth + logoRightSpace;
+                    }else{
+                        yAdder = ((letterXHeight + xHeight)*(currLine+1))
                     }
-                    else{
-                        ctx.fillText(splitWords[i], canvasMargin + prevWidth, canvasMargin + imageHeight + ((letterXHeight + xHeight)*(currLine+1)));
-                    }
+                    ctx.fillText(splitWords[i], canvasMargin + prevWidth + xAdder, canvasMargin + imageHeight + yAdder);
+
                     writtenWords+=splitWords[i];
+
+                    //keep track of max text width
+                    if(ctx.measureText(writtenWords).width > maxWidth){
+                        maxWidth = canvasMargin + ctx.measureText(writtenWords).width + xAdder;
+                    }
+                    if(canvasMargin + imageHeight + yAdder > maxHeight){
+                        maxHeight = canvasMargin + imageHeight + yAdder;
+                    }
                 }
             }else{
-                if(userInput.trim().indexOf(' ') != -1){ // multiple words
-                    ctx.font = "normal 69px Helvetica";
-                    ctx.fillText(newLines[currLine], canvasMargin, canvasMargin + imageHeight + ((letterXHeight + xHeight)*(currLine+1)));
+                ctx.font = "normal 69px Helvetica";
+                let xAdder = 0;
+                let yAdder = 0;
+                if(userInput.trim().indexOf(' ') != -1 || newLines[currLine].length > 15){ // multiple words or long word
+                    yAdder = ((letterXHeight + xHeight)*(currLine+1));
                 }else{
-                    ctx.font = "normal 69px Helvetica";
-                    if(newLines[currLine].length < 15){
-                        ctx.fillText(newLines[currLine], canvasMargin + imageWidth + logoRightSpace, canvasMargin + imageHeight);
-                    }else{
-                        ctx.fillText(newLines[currLine], canvasMargin, canvasMargin + imageHeight + ((letterXHeight + xHeight)*(currLine+1)));
-                    }
+                    xAdder = imageWidth + logoRightSpace;
                 }
-                
+                ctx.fillText(newLines[currLine], canvasMargin + xAdder, canvasMargin + imageHeight + yAdder);
+
+
+                //keep track of max text width
+                if(ctx.measureText(newLines[currLine]).width > maxWidth){
+                    maxWidth = canvasMargin + ctx.measureText(newLines[currLine]).width + xAdder;
+                }
+                if(yAdder + canvasMargin + imageHeight > maxHeight){
+                    maxHeight = yAdder + canvasMargin + imageHeight;
+                }
             }
 
         }
+        currContentWidth = maxWidth;
+        currContentHeight = maxHeight;
+        console.log("max width: " + currContentWidth);
+        console.log("max height: " + currContentHeight);
     }
 
     if(!demoToggle){
@@ -166,18 +192,39 @@ function checkAndSplitWords(fullWord){
 
 }
 
+//fix later!
 function saveImage(){
     if(input.value != ""){
-        image = canvas.toDataURL("image/png", .1);
-        var link = document.createElement('a');
-        link.download = "myNewTEDxLogo.png";
-        link.href = image;
-        link.click();
+        prepForDownload();
+
         alert("Congratulations! You're one step closer to running your TEDx event!");
     }else{
         alert("Hold your horses! You can download your logos after entering your event name.");
     }
 }
+
+function prepForDownload(){
+    // create a temporary canvas sized to the cropped size
+    var canvasTemp=document.createElement('canvas');
+    canvasTemp.width=(currContentWidth + canvasMargin)*scaleFactor;
+    canvasTemp.height=(currContentHeight + canvasMargin)*scaleFactor;
+
+    var ctxTemp=canvasTemp.getContext('2d');
+    ctxTemp.scale(scaleFactor,scaleFactor);
+
+    console.log("final width and height: " + currContentWidth + " " +  currContentHeight);
+
+    // cropped area to the temp canvas
+    ctxTemp.drawImage(canvas,0,0,(currContentWidth + canvasMargin)*scaleFactor,(currContentHeight + canvasMargin)*scaleFactor,0,0,currContentWidth+canvasMargin,currContentHeight+canvasMargin);
+    // return the .toDataURL of the temp canvas
+    var cropImg=new Image();
+    cropImg=canvasTemp.toDataURL("image/png", .1);
+    console.log(cropImg);
+    var link = document.createElement('a');
+    link.download = "myNewTEDxLogo.png";
+    link.href = cropImg;
+    link.click();
+  }
 
 // Allow for radio buttons to be unchecked!
 var options = document.querySelectorAll('input[type="radio"]')
