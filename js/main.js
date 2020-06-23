@@ -124,7 +124,6 @@ function updateValue(userInput){
 
 function checkAndSplitWords(fullWord){
     let splitWords = fullWord.split(" ");
-    console.log("splitWords: " + splitWords);
     var firstLine = "";
     var secondLine = "";
     var thirdLine = "";
@@ -163,7 +162,6 @@ function checkAndSplitWords(fullWord){
             break;
         }
     }
-    console.log("final: " + toReturn);
     return toReturn;
 
 }
@@ -254,6 +252,24 @@ function startDemo(){
         console.log(testWordInput);
     }, true);
 }
+
+//image carousel
+let image = document.querySelector("#tedxHighlights");
+let counter = 1;
+let numImages = 4;
+window.setInterval(swapImage,3000);
+
+function swapImage(){
+    image.src="assets/tedx"+counter+".jpg";
+    counter++;
+    if(counter > numImages){
+        counter = 1;
+    }
+}
+
+window.onload = function() {
+    document.querySelector("#eventName").focus();
+  }
 
 // const metrics = FontMetrics({
 //     fontFamily: 'Helvetica',

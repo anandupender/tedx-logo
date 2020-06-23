@@ -22,25 +22,44 @@
         <a href="" rel="noopener noreferrer" id="share">Share</a>
     </div>
 
-    <div id="canvasContainer">
-        <canvas id="canvas"></canvas>
-        <div id="tipBox">
-        </div>
-    </div>
+    <div id="mainContainer">
+        <div class="topSection">
 
-    <div id="toolbarContainer">
-        <div id="toolbar">
-            <input type="text" autocomplete="off" id="eventName" name="name" placeholder="Event Name">
-            <div id="modifiers">
-                <input type="radio" id="youth" name="name" value="youth">
-                <label for="youth">Youth</label>
-                <input type="radio" id="women" name="name" value="women">
-                <label for="women">Women</label>
-                <input type="radio" id="salon" name="name" value="salon">
-                <label for="salon">Salon</label>
+            <div id="canvasContainer">
+                <canvas id="canvas"></canvas>
+                <div id="tipBox">
+                </div>
+            </div>
+
+            <div id="toolbarContainer">
+                <div id="toolbar">
+                    <input type="text" autocomplete="off" id="eventName" name="name" placeholder="Event Name" autofocus>
+                    <div id="modifiers">
+                        <input type="radio" id="youth" name="name" value="youth">
+                        <label for="youth">Youth</label>
+                        <input type="radio" id="women" name="name" value="women">
+                        <label for="women">Women</label>
+                        <input type="radio" id="salon" name="name" value="salon">
+                        <label for="salon">Salon</label>
+                    </div>
+                </div>
+                <button onclick="saveImage()" id="saveButton">Download &#x1F389;</button>
             </div>
         </div>
-        <button onclick="saveImage()" id="saveButton">Download 🎉</button>
+        <div class="bottomSection">
+            <div class="infoContainer">
+                <h1>The Official TEDx Logo</h1>
+                <div class="flex">
+                    <div class="columns">
+                        Our goal was simple: allow you to create a TEDx logo in under 1 minute. We know there is a lot going on in putting together your independentally organized TED event (this may even be your first time hosting!) But trust us, it's not that difficult. We just launched a new identity for all TEDx events and we want you to be as excited by it as us! It's cleaner, simpler, and more rule-based. Who doesn't love some rules?? It works with Youth, Salon, and Women events seamlessly and most importantly, saves you time from tinkering in Adobe Illustrator. For now, sit back and focus on the uniqueness of your event, we got this part taken care of. Feel free to <a style="font-size:16px;" href="mailto:anand@ted.com">share</a> how much you like or don't like this site. <br><br>Ciao!
+                    </div>
+                    <img src="assets/tedx1.jpg" id="tedxHighlights">
+                </div>
+
+            </div>
+          
+        </div>
+
     </div>
 
     <div class="footer left animate__animated animate__fadeIn animate__delay-1s">
