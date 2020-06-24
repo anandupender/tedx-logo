@@ -17,7 +17,16 @@
     --white:#f8f8f8;
     --pure-white:#fff;
     --red:#e52b1e;
-  }
+}
+
+.dark{
+    --black:#f8f8f8;
+    --dark: #bbb;
+    --light:#999;
+    --white:#111;
+    --pure-white:#000;
+    --red:#e52b1e;
+}
 
 body{
     background-color: var(--pure-white);
@@ -229,7 +238,7 @@ a:hover{
 
     #saveButton{
         box-shadow: 0px 6px 15px 5px rgba(0,0,0,0.1);
-        display:none;
+        display:block;
         width:150px;
         height:150px;
         border-radius: 50%;
