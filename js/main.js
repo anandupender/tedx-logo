@@ -72,7 +72,7 @@ let numImages = 4;
 window.onload = function() {
     createCanvas();
     prepareUserInput();
-    updateValue("");
+    updateValue("", canvas,ctx);
     // FEATURE: SHOW PLACEHOLDER NAMES
     window.setInterval(function(){
         showPlaceholderExamples();
@@ -102,23 +102,32 @@ function prepareUserInput(){
         if(input.value != ""){
             demoToggle = false; 
         }
-        updateValue(input.value);
+        updateValue(input.value, canvas, ctx);
     });
 }
 
 // FUNCTION - UPDATE CANVAS WITH USER INPUT AND CURRENT EVENT MODIFIER
-function updateValue(userInput){
+function updateValue(userInput, currCanvas, currCtx,color){
     userInput += " " + currEventModifier;
 
     // Clear screen
-    ctx.clearRect(0,0,canvas.clientWidth,canvas.height);
-    ctx.fillStyle = "#FFF";
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    currCtx.clearRect(0,0,currCanvas.clientWidth,currCanvas.height);
+    var textColor;
+    var bkgdColor;
+    if(color == "black"){
+        textColor = "#FFF";
+        bkgdColor = "#000";
+    }else{
+        textColor = "#000";
+        bkgdColor = "#FFF";
+    }
+    currCtx.fillStyle = bkgdColor;
+    currCtx.fillRect(0, 0, currCanvas.width, currCanvas.height);
 
     //Draw Logo
-    ctx.drawImage(logo, canvasMargin, canvasMargin,imageWidth,imageHeight);
+    currCtx.drawImage(logo, canvasMargin, canvasMargin,imageWidth,imageHeight);
 
-    ctx.fillStyle = "black";
+    currCtx.fillStyle = textColor;
     let newLines = checkAndSplitWords(userInput);
 
     if(newLines != null){
@@ -128,45 +137,46 @@ function updateValue(userInput){
 
             // If showing demo placeholders, decrease font color
             if(demoToggle){
-                ctx.fillStyle = "#e5e5e5";
+                currCtx.fillStyle = "#e5e5e5";
             }else{
-                ctx.fillStyle = "#000000";
+                currCtx.fillStyle = textColor;
             }
 
             if(currEventModifier != "" && currLine == newLines.length - 1){
                 let splitWords = newLines[currLine].split(" ");
                 let writtenWords = "";
                 for(let i = 0; i < splitWords.length;i++){
-                    let prevWidth = ctx.measureText(writtenWords).width; //calculate width before changing font
+                    let prevWidth = currCtx.measureText(writtenWords).width; //calculate width before changing font
                     if(i == splitWords.length - 1) { //bold last word!
-                        ctx.font = "bold 69px Helvetica";
+                        currCtx.font = "bold 69px Helvetica";
                     }else{
-                        ctx.font = "normal 69px Helvetica";
+                        currCtx.font = "normal 69px Helvetica";
                         splitWords[i] += " ";
                     }
 
                     let xAdder = 0;
                     let yAdder = 0;
+
                     // If only two words and less than 15 characters, put on first line
                     if(splitWords.length == 2 && newLines[currLine].length < 15  && newLines.length == 1){ 
                         xAdder = imageWidth + logoRightSpace;
                     }else{
                         yAdder = ((letterXHeight + xHeight)*(currLine+1))
                     }
-                    ctx.fillText(splitWords[i], canvasMargin + prevWidth + xAdder, canvasMargin + imageHeight + yAdder);
+                    currCtx.fillText(splitWords[i], canvasMargin + prevWidth + xAdder, canvasMargin + imageHeight + yAdder);
 
                     writtenWords+=splitWords[i];
 
                     // Keep track of max text width
-                    if(ctx.measureText(writtenWords).width > maxWidth){
-                        maxWidth = canvasMargin + ctx.measureText(writtenWords).width + xAdder;
+                    if(canvasMargin + prevWidth + currCtx.measureText(splitWords[i]).width + xAdder > maxWidth){
+                        maxWidth = canvasMargin + prevWidth + currCtx.measureText(splitWords[i]).width + xAdder;
                     }
                     if(canvasMargin + imageHeight + yAdder > maxHeight){
                         maxHeight = canvasMargin + imageHeight + yAdder;
                     }
                 }
             }else{
-                ctx.font = "normal 69px Helvetica";
+                currCtx.font = "normal 69px Helvetica";
                 let xAdder = 0;
                 let yAdder = 0;
                 if(userInput.trim().indexOf(' ') != -1 || newLines[currLine].length > 15){ // multiple words or long word
@@ -174,12 +184,12 @@ function updateValue(userInput){
                 }else{
                     xAdder = imageWidth + logoRightSpace;
                 }
-                ctx.fillText(newLines[currLine], canvasMargin + xAdder, canvasMargin + imageHeight + yAdder);
+                currCtx.fillText(newLines[currLine], canvasMargin + xAdder, canvasMargin + imageHeight + yAdder);
 
 
                 // Keep track of max text width
-                if(ctx.measureText(newLines[currLine]).width > maxWidth){
-                    maxWidth = canvasMargin + ctx.measureText(newLines[currLine]).width + xAdder;
+                if(canvasMargin + currCtx.measureText(newLines[currLine]).width + xAdder > maxWidth){
+                    maxWidth = canvasMargin + currCtx.measureText(newLines[currLine]).width + xAdder;
                 }
                 if(yAdder + canvasMargin + imageHeight > maxHeight){
                     maxHeight = yAdder + canvasMargin + imageHeight;
@@ -189,8 +199,10 @@ function updateValue(userInput){
         }
 
         // Update the overal width of all content in the canvas
-        currContentWidth = maxWidth;
-        currContentHeight = maxHeight;
+        if(currCanvas == canvas){
+            currContentWidth = maxWidth;
+            currContentHeight = maxHeight;
+        }
     }
 
     // WHEN NOT ON DEMO MODE, SHOW TIPS AS THE USER TYPES
@@ -255,24 +267,19 @@ function checkAndSplitWords(fullWord){
 
 }
 
+var zip = new JSZip();
+
 // FUNCTION - SAVE BUTTON FUNCTION
 function saveImage(){
     if(input.value != ""){
-        var toSave = prepForDownload();
-
-        var link = document.createElement('a');
-        link.download = "myNewTEDxLogo.png";
-        link.href = toSave;
-        link.click();
-
-        alert("Congratulations! You're one step closer to running your TEDx event!");
+        prepForDownload("white");
     }else{
         alert("Hold your horses! You can download your logos after entering your event name.");
     }
 }
 
 // FUNCTION - CREATE TEMPORARY CANVAS TO CROP TO PROPER SIZE 
-function prepForDownload(){
+function prepForDownload(color){
    
     // Create a temporary canvas sized to the cropped size
     var canvasTemp=document.createElement('canvas');
@@ -282,14 +289,22 @@ function prepForDownload(){
     var ctxTemp=canvasTemp.getContext('2d');
     ctxTemp.scale(scaleFactor,scaleFactor);
 
-    // cropped area to the temp canvas
-    ctxTemp.drawImage(canvas,0,0,(currContentWidth + canvasMargin)*scaleFactor,(currContentHeight + canvasMargin)*scaleFactor,0,0,currContentWidth+canvasMargin,currContentHeight+canvasMargin);
-    
-    var cropImg=new Image();
-    cropImg=canvasTemp.toDataURL("image/png", .1);
+    updateValue(input.value, canvasTemp,ctxTemp,color);
 
-    return cropImg;
-  }
+    //TODO: fix this janky way of waiting till all images uploaded before saving
+    canvasTemp.toBlob(function (blob) {
+        zip.file(color+".png", blob);
+        if(color == "white"){
+            prepForDownload("black");
+        }else{
+            zip.generateAsync({type:"blob"})
+            .then(function (blob) {
+                saveAs(blob, "tedx.zip");
+                alert("Congratulations! You're one step closer to running your TEDx event!");
+            });
+        }
+    });
+}
 
 // FUNCTION - HELPER TO ALLOW FOR RADIO BUTTONS TO BE UNSELECTED
 var options = document.querySelectorAll('input[type="radio"]')
@@ -302,7 +317,7 @@ for(var i = 0; i < options.length;i++){
             currEventModifier = this.value.charAt(0).toUpperCase() +  this.value.slice(1);
         }
         if(input.value){
-            updateValue(input.value);
+            updateValue(input.value,canvas,ctx);
         }
         this.previous = this.checked;        
     }
@@ -326,7 +341,7 @@ function showTip(tip){
 function showPlaceholderExamples(){
     if((input.value == "" || input.value == " ")){
         demoToggle = true;
-        updateValue(demoNames[demoCounter]);
+        updateValue(demoNames[demoCounter],canvas,ctx);
         demoCounter++;
         if(demoCounter == demoNames.length){
             demoCounter = 0;
