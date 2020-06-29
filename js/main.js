@@ -15,7 +15,8 @@
 //
 //  Welcome to the Official TEDx Logo Generator!
 //  Created amidst the crazy world of the COVID-19 Pandemic, June 2020
-//  Designed and coded by Anand Upender (anandupender.com) with direction from David Rosenberg
+//  Design system created by Mike Femia, Peter Zweifel, Dian Lofton, and Casey Walter
+//  Site designed and coded by Anand Upender (anandupender.com) with direction from David Rosenberg
 //  Created with rad CSS animations from Animate.css and SASS Compiling. No <canvas> libraries used
 //  View this project on Github: https://github.com/anandupender/tedx-logo
 //
@@ -43,7 +44,6 @@ var imageWidth;
 const logoRightSpace = 10;
 const letterXHeight = 20;
 const xHeight = 50;
-const innerBoxHeight = imageHeight + (3*letterXHeight) + (3*xHeight);
 
 // GLOBAL CONSTANTS - TIPS
 const tipBox = document.querySelector("#tipBox");
@@ -51,7 +51,7 @@ const tipMultiWord = "Tip: Multi-word event names start on the second line";
 const tipWordWrap = "Tip: When the name gets too long, it wraps to the next line";
 const tipFinal = "Tip: There can be a max of three lines of event name text";
 const tipLong = "Tip: The first word can have 15 characters maximum";
-const tipTooLong = "Tip: A single word cannot exceed the max width of the box";
+const tipTooLong = "Tip: Your event name is too long or has a word that is too long";
 
 // GLOBAL VARIABLES - USER INPUT
 let input = document.querySelector('#eventName');
@@ -80,8 +80,11 @@ window.onload = function() {
 
     document.querySelector("#eventName").focus();
     console.log(easter1);
-    console.log("Well someone's not afraid to look under the hood");
-    console.log("(⌐ ͡■ ͜ʖ ͡■)");
+    console.log(`
+Thanks for stopping by and looking under the hood!
+Site created by Anand Upender at TED Conferences LLC in 2020
+Have a great day! (⌐ ͡■ ͜ʖ ͡■)
+    `);
 };
 
 function createCanvas(){
@@ -103,6 +106,9 @@ function prepareUserInput(){
             demoToggle = false; 
         }
         updateValue(input.value, canvas, ctx);
+        if(input.value.toLowerCase().includes(easter2.name)){
+            window.open(easter2.url, '_blank');
+        }
     });
 }
 
@@ -137,7 +143,7 @@ function updateValue(userInput, currCanvas, currCtx,color){
 
             // If showing demo placeholders, decrease font color
             if(demoToggle){
-                currCtx.fillStyle = "#e5e5e5";
+                currCtx.fillStyle = "#d5d5d5";
             }else{
                 currCtx.fillStyle = textColor;
             }
@@ -154,17 +160,15 @@ function updateValue(userInput, currCanvas, currCtx,color){
                         splitWords[i] += " ";
                     }
 
+                    // If only two words and less than 15 characters, put on first line
                     let xAdder = 0;
                     let yAdder = 0;
-
-                    // If only two words and less than 15 characters, put on first line
                     if(splitWords.length == 2 && newLines[currLine].length < 15  && newLines.length == 1){ 
                         xAdder = imageWidth + logoRightSpace;
                     }else{
                         yAdder = ((letterXHeight + xHeight)*(currLine+1))
                     }
                     currCtx.fillText(splitWords[i], canvasMargin + prevWidth + xAdder, canvasMargin + imageHeight + yAdder);
-
                     writtenWords+=splitWords[i];
 
                     // Keep track of max text width
@@ -186,7 +190,6 @@ function updateValue(userInput, currCanvas, currCtx,color){
                 }
                 currCtx.fillText(newLines[currLine], canvasMargin + xAdder, canvasMargin + imageHeight + yAdder);
 
-
                 // Keep track of max text width
                 if(canvasMargin + currCtx.measureText(newLines[currLine]).width + xAdder > maxWidth){
                     maxWidth = canvasMargin + currCtx.measureText(newLines[currLine]).width + xAdder;
@@ -195,7 +198,6 @@ function updateValue(userInput, currCanvas, currCtx,color){
                     maxHeight = yAdder + canvasMargin + imageHeight;
                 }
             }
-
         }
 
         // Update the overal width of all content in the canvas
@@ -226,48 +228,38 @@ function updateValue(userInput, currCanvas, currCtx,color){
 // FUNCTION - CHECK LINE WIDTH OF WORDS AND SPLIT INTO MULTIPLE LINES
 function checkAndSplitWords(fullWord){
     let splitWords = fullWord.split(" ");
-    var firstLine = "";
-    var secondLine = "";
-    var thirdLine = "";
-    var toReturn = [];
+    var toReturn = ["","",""];
+    let currLine = 0;
 
-    var i = 0;
-    let currLine = 1;
-    while(i < splitWords.length){
-        if(currLine == 1){
-            if(ctx.measureText(firstLine + splitWords[i]).width > imageWidth*4){
+    for(var i = 0; i < splitWords.length;i++){
+        if(currLine < 3){
+            if(ctx.measureText(toReturn[currLine] + splitWords[i]).width > imageWidth*4){
+                toReturn[currLine] = toReturn[currLine].trim();
                 currLine++;
+                i--; //don't go on to the next one if it doesn't fit
             }else{
-                firstLine += splitWords[i] +  " " ;
-                toReturn = [firstLine.trim()];
-                i++;
+                toReturn[currLine] += splitWords[i] + " ";
             }
-        }else if(currLine == 2){
-            if(ctx.measureText(secondLine + splitWords[i]).width > imageWidth*4){
-                currLine++;
-            }else{
-                secondLine += splitWords[i]  +  " ";
-                toReturn = [firstLine.trim(), secondLine.trim()];
-                i++;
-            }
-        }else if(currLine == 3){
-            if(ctx.measureText(thirdLine + splitWords[i]).width > imageWidth*4){
-                currLine++;
-            }else{
-                thirdLine += splitWords[i] + " ";
-                toReturn = [firstLine.trim(), secondLine.trim(), thirdLine.trim()];
-                i++;
-            }
-        }else{  //word is just too long in general even for a full line!
-            toReturn = null;
-            break;
+        }else{
+            return null;  //too long, show nothing!
+        }
+    }
+
+    //truncate array to just the lines with values
+    for(var j = 0; j < 3;j++){
+        if(toReturn[j] === "" || toReturn[j] === undefined){
+            toReturn.splice(j,2)
+        }
+        else{
+            toReturn[j] = toReturn[j].trim();
         }
     }
     return toReturn;
-
 }
 
 var zip = new JSZip();
+var topSection = document.querySelector(".topSection");
+var savedSection = document.querySelector(".savedContainer");
 
 // FUNCTION - SAVE BUTTON FUNCTION
 function saveImage(){
@@ -300,7 +292,12 @@ function prepForDownload(color){
             zip.generateAsync({type:"blob"})
             .then(function (blob) {
                 saveAs(blob, "tedx.zip");
-                alert("Congratulations! You're one step closer to running your TEDx event!");
+                // alert("Congratulations! Check out that gorgeous logo of yours!");
+                savedSection.innerHTML = "Congrats TEDx" + input.value + " Organizer! &#x1F44F&#x1F3FE";
+                topSection.classList.add("saved");
+                window.setTimeout(function (){
+                    topSection.classList.remove("saved");
+                },3000);
             });
         }
     });
@@ -360,7 +357,7 @@ function swapImage(){
     }
 }
 
-window.setInterval(swapImage,3000);
+window.setInterval(swapImage,2500);
 
 const easter1 = `
 ████████ ███████ ██████  ██   ██                                             
@@ -375,16 +372,9 @@ const easter1 = `
 ██      ██    ██ ██   ███ ██    ██                                           
 ██      ██    ██ ██    ██ ██    ██                                           
 ███████  ██████   ██████   ██████                                            
-`
+`;
 
-//Real ToDos
-// crop the saved canvas image as to not include white space - OR redraw canvas size as it changes!
-// get real Helvetica file, font weight
-// fix all alignments with proper x-height stuff
-// get real TED logo
-// optimize code
-// add favicon
-
+const easter2 = {name:"anandupender",url:"https://www.anandupender.com/"};
 
 // DEMO FEATURE: MAKE BUTTONS INTERACT WITH MOUSE POSITION
 
