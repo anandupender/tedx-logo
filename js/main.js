@@ -293,11 +293,15 @@ function prepForDownload(color){
             .then(function (blob) {
                 saveAs(blob, "tedx.zip");
                 // alert("Congratulations! Check out that gorgeous logo of yours!");
-                savedSection.innerHTML = "Congrats TEDx" + input.value + " Organizer! &#x1F44F&#x1F3FE";
-                topSection.classList.add("saved");
-                window.setTimeout(function (){
-                    topSection.classList.remove("saved");
-                },3000);
+                if(currEventModifier != ""){
+                    currEventModifier = " " + currEventModifier;
+                }
+                // savedSection.innerHTML = "Congrats TEDx" + input.value + currEventModifier + " Organizer!";
+                // topSection.classList.add("saved");
+                // window.setTimeout(function (){
+                //     topSection.classList.remove("saved");
+                // },3000);
+                alert("🎉 Woohoo! Congrats on your official TEDx Logo");
             });
         }
     });
