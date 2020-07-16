@@ -81,9 +81,9 @@ window.onload = function() {
     document.querySelector("#eventName").focus();
     console.log(easter1);
     console.log(`
-Thanks for stopping by and looking under the hood!
-Site created by Anand Upender at TED Conferences LLC in 2020
-Have a great day! (⌐ ͡■ ͜ʖ ͡■)
+    Thanks for stopping by and looking under the hood!
+    Site created by Anand Upender at TED Conferences LLC in 2020
+    Have a great day! (⌐ ͡■ ͜ʖ ͡■)
     `);
 };
 
@@ -95,7 +95,7 @@ function createCanvas(){
     canvas.style.height = canvasHeight/scaleFactor + "px";
     ctx = canvas.getContext("2d");
     ctx.scale(scaleFactor,scaleFactor);
-    ctx.font = "normal 69px Helvetica";
+    ctx.font = "normal 70px Helvetica";
 }
 
 // FUNCTION - GET USER EVENT NAME INPUT AND FILTER OUT INPROPER CHARACTERS
@@ -119,16 +119,11 @@ function updateValue(userInput, currCanvas, currCtx,color){
     // Clear screen
     currCtx.clearRect(0,0,currCanvas.clientWidth,currCanvas.height);
     var textColor;
-    var bkgdColor;
     if(color == "black"){
         textColor = "#FFF";
-        bkgdColor = "#000";
     }else{
         textColor = "#000";
-        bkgdColor = "#FFF";
     }
-    currCtx.fillStyle = bkgdColor;
-    currCtx.fillRect(0, 0, currCanvas.width, currCanvas.height);
 
     //Draw Logo
     currCtx.drawImage(logo, canvasMargin, canvasMargin,imageWidth,imageHeight);
@@ -154,9 +149,9 @@ function updateValue(userInput, currCanvas, currCtx,color){
                 for(let i = 0; i < splitWords.length;i++){
                     let prevWidth = currCtx.measureText(writtenWords).width; //calculate width before changing font
                     if(i == splitWords.length - 1) { //bold last word!
-                        currCtx.font = "bold 69px Helvetica";
+                        currCtx.font = "bold 70px Helvetica";
                     }else{
-                        currCtx.font = "normal 69px Helvetica";
+                        currCtx.font = "normal 70px Helvetica";
                         splitWords[i] += " ";
                     }
 
@@ -180,7 +175,7 @@ function updateValue(userInput, currCanvas, currCtx,color){
                     }
                 }
             }else{
-                currCtx.font = "normal 69px Helvetica";
+                currCtx.font = "normal 70px Helvetica";
                 let xAdder = 0;
                 let yAdder = 0;
                 if(userInput.trim().indexOf(' ') != -1 || newLines[currLine].length > 15){ // multiple words or long word
@@ -264,7 +259,7 @@ var savedSection = document.querySelector(".savedContainer");
 // FUNCTION - SAVE BUTTON FUNCTION
 function saveImage(){
     if(input.value != ""){
-        prepForDownload("white");
+        prepForDownload("black");
     }else{
         alert("Hold your horses! You can download your logos after entering your event name.");
     }
@@ -286,8 +281,8 @@ function prepForDownload(color){
     //TODO: fix this janky way of waiting till all images uploaded before saving
     canvasTemp.toBlob(function (blob) {
         zip.file(color+".png", blob);
-        if(color == "white"){
-            prepForDownload("black");
+        if(color == "black"){
+            prepForDownload("white");
         }else{
             zip.generateAsync({type:"blob"})
             .then(function (blob) {
