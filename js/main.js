@@ -32,18 +32,19 @@ let scaleFactor = 4;
 let canvasMargin = 30;
 
 // GLOBAL CONSTANTS - CANVAS IMAGE
+const xPos = 50;
+const yPos = 50;
+const imageHeight = 50;
+var imageWidth;
+const logoRightSpace = imageHeight/20*4; //should be 10px in this case - magic ratio
+const letterXHeight = 61.66/2; // magic ratio
+const xHeight = 69/2; // magic ratio
+let fontSize = "66.5px"; // should be 95% of the height of the logo - magic ratio 
 const logo = new Image(); 
 logo.onload = function() {
     imageWidth = imageHeight * logo.width / logo.height;
 }
 logo.src = 'assets/logo.png';
-const xPos = 50;
-const yPos = 50;
-const imageHeight = 50;
-var imageWidth;
-const logoRightSpace = 10;
-const letterXHeight = 20;
-const xHeight = 50;
 
 // GLOBAL CONSTANTS - TIPS
 const tipBox = document.querySelector("#tipBox");
@@ -95,7 +96,7 @@ function createCanvas(){
     canvas.style.height = canvasHeight/scaleFactor + "px";
     ctx = canvas.getContext("2d");
     ctx.scale(scaleFactor,scaleFactor);
-    ctx.font = "normal 70px Helvetica";
+    ctx.font = "normal " + fontSize + " Helvetica";
 }
 
 // FUNCTION - GET USER EVENT NAME INPUT AND FILTER OUT INPROPER CHARACTERS
@@ -149,9 +150,9 @@ function updateValue(userInput, currCanvas, currCtx,color){
                 for(let i = 0; i < splitWords.length;i++){
                     let prevWidth = currCtx.measureText(writtenWords).width; //calculate width before changing font
                     if(i == splitWords.length - 1) { //bold last word!
-                        currCtx.font = "bold 70px Helvetica";
+                        currCtx.font = "bold " + fontSize + " Helvetica";
                     }else{
-                        currCtx.font = "normal 70px Helvetica";
+                        currCtx.font = "normal " + fontSize + " Helvetica";
                         splitWords[i] += " ";
                     }
 
@@ -175,7 +176,7 @@ function updateValue(userInput, currCanvas, currCtx,color){
                     }
                 }
             }else{
-                currCtx.font = "normal 70px Helvetica";
+                currCtx.font = "normal " + fontSize + " Helvetica";
                 let xAdder = 0;
                 let yAdder = 0;
                 if(userInput.trim().indexOf(' ') != -1 || newLines[currLine].length > 15){ // multiple words or long word

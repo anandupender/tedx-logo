@@ -15,7 +15,7 @@
   --light:#bbb;
   --white:#f8f8f8;
   --pure-white:#fff;
-  --red:#f02328;
+  --red:#eb0028;
 }
 
 .dark {
@@ -24,7 +24,7 @@
   --light:#999;
   --white:#111;
   --pure-white:#000;
-  --red:#f02328;
+  --red:#eb0028;
 }
 
 body {
