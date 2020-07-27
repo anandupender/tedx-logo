@@ -348,11 +348,27 @@ button {
 .footer.center{
     bottom:20px;
     color:var(--white);
+    position: absolute;
 }
 .footer.right{
     right:30px;
     transform-origin: 100%;
     transform:rotate(90deg);
+}
+
+#mouse{
+    position: absolute;
+    bottom:15px;
+    img{
+        height:50px;
+        width:50px;
+        transition: transform 200ms ease, opacity 200ms ease;
+        opacity: .6;
+    }
+    img:hover{
+        transform: translateY(6px);
+        opacity: 1;
+    }
 }
 
 .demo{
