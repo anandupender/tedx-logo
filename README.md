@@ -6,6 +6,8 @@ TEDx is a grassroots initiative, created in the spirit of TED’s overall missio
 
 View more information on [our site](https://www.ted.com/about/programs-initiatives/tedx-program)
 
+![Screenshot](https://github.com/anandupender/tedx-logo/blob/master/assets/screenshot.png)
+
 ## Tools   
 [Sass](https://sass-lang.com/) helps streamline our styling flow  
 [Animate.css](https://animate.style/) adds out of the box animations  
