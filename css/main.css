@@ -314,7 +314,7 @@ button {
   color: var(--black);
 }
 .footer a {
-  opacity: 0.4;
+  opacity: 0.5;
 }
 .footer span, .footer a {
   margin-right: 12px;
@@ -368,6 +368,54 @@ button {
 }
 .demo a {
   color: var(--white) !important;
+}
+
+#mobileFallback {
+  position: fixed;
+  background-color: var(--white);
+  display: none;
+  flex-direction: column;
+  text-align: center;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  width: 100vw;
+  height: 100vh;
+}
+#mobileFallback .logo {
+  position: absolute;
+  top: 10vh;
+  width: 40vw;
+}
+#mobileFallback .title {
+  font-size: 42px;
+  font-weight: 700;
+  line-height: 110%;
+  margin-bottom: 15px;
+  width: 89%;
+}
+#mobileFallback .subtitle {
+  font-size: 16px;
+  width: 460px;
+  margin-bottom: 15px;
+}
+
+@media only screen and (max-width: 700px) {
+  body {
+    overflow: hidden;
+    height: 100vh;
+  }
+
+  #mobileFallback {
+    display: flex !important;
+  }
+  #mobileFallback .subtitle {
+    width: 90%;
+  }
+
+  #mainContainer {
+    display: none;
+  }
 }
 
 /*# sourceMappingURL=main.css.map */

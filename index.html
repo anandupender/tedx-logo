@@ -7,15 +7,28 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>TEDx Logo Generator</title>
     <link rel="stylesheet" href="./css/main.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.0.0/animate.min.css"/>
     <link rel="preload" as="font" href="assets/helvetica.otf" type="font/otf" crossorigin="anonymous">
     <link rel="preload" as="font" href="assets/helvetica-bold.otf" type="font/otf" crossorigin="anonymous">
+    <link rel="preload" as="image" href="assets/logo.png">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;700;900&display=swap" rel="stylesheet">
     <link rel="apple-touch-icon" sizes="180x180" href="assets/apple-touch-icon.png">
     <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32x32.png">
     <link rel="icon" type="image/png" sizes="16x16" href="assets/favicon-16x16.png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.0.0/animate.min.css"/>
 </head>
 <body>
+
+    <div id="mobileFallback" style="display: none;">
+        <img class="logo" src="./assets/logo.png" alt="">
+        <div class="title">
+            Aw shucks! 🌽
+        </div>
+        <div class="subtitle">
+            Your TEDx logo is a big part of your event! For the best experience in creating it, please open this page on a computer or larger screen. Thanks!
+        </div>
+
+    </div>
+
 
     <div id="header" class="animate__animated animate__fadeIn animate__delay-2s">
         <a href="https://www.ted.com/participate/organize-a-local-tedx-event/tedx-organizer-guide/branding-promotions/logo-and-design/your-tedx-logo">
