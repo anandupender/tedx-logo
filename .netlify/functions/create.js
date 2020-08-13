@@ -2,7 +2,7 @@ const Airtable = require('airtable')
 
 exports.handler = function(event, context, callback) {
 
-    if(JSON.parse(event.body).Name != "test"){
+    if(JSON.parse(event.body).fields.Name != "test"){
         var base = new Airtable({apiKey: process.env.AIRTABLE_API_KEY}).base(process.env.AIRTABLE_BASE_KEY);
 
         base('Main').create([JSON.parse(event.body)]
