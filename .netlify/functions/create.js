@@ -10,7 +10,6 @@ exports.handler = function(event, context, callback) {
             }
  
             const body = JSON.stringify({ record: records[0] })
-            console.log(body);
             const response = {
               statusCode: 200,
               body: body,

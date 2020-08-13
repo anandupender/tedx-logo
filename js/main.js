@@ -318,7 +318,8 @@ function uploadToAirtable(value){
     var toSend = {"fields":
         {
         "Name": value,
-        "Timestamp": d
+        "Timestamp": d,
+        "Modifier": currEventModifier
         }
     }
 
@@ -327,7 +328,6 @@ function uploadToAirtable(value){
         body: JSON.stringify(toSend)
         }).then(response => response.json())
         .then(data => {
-            console.log(data);      
         })
         .catch(error => alert(error));
 }
