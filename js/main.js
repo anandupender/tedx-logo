@@ -313,9 +313,12 @@ function prepForDownload(color){
 // FUNCTION - SAVE DATABASE RECORD FOR ANALYTICS
 function uploadToAirtable(value){
 
+    var d = new Date();
+
     var toSend = {"fields":
         {
-        "Event Name": value,
+        "Name": value,
+        "Timestamp": d
         }
     }
 
@@ -324,7 +327,7 @@ function uploadToAirtable(value){
         body: JSON.stringify(toSend)
         }).then(response => response.json())
         .then(data => {
-            console.log(data);
+            console.log(data);      
         })
         .catch(error => alert(error));
 }
