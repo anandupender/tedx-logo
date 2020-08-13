@@ -266,10 +266,6 @@ a:hover {
   content: " 🎉";
   opacity: 1;
 }
-#toolbarContainer #saveButton:active {
-  transform: rotate(360deg);
-  transition: none;
-}
 
 #canvasContainer {
   position: absolute;

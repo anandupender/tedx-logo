@@ -266,6 +266,7 @@ var savedSection = document.querySelector(".savedContainer");
 // FUNCTION - SAVE BUTTON FUNCTION
 function saveImage(){
     if(input.value != ""){
+        createConfetti();
         prepForDownload("black");
         uploadToAirtable(input.value);
     }else{
@@ -304,7 +305,7 @@ function prepForDownload(color){
                 // window.setTimeout(function (){
                 //     topSection.classList.remove("saved");
                 // },3000);
-                alert("🎉 Woohoo! Congrats on your official TEDx Logo");
+                // alert("🎉 Woohoo! Congrats on your official TEDx Logo");
             });
         }
     });
@@ -329,7 +330,13 @@ function uploadToAirtable(value){
         }).then(response => response.json())
         .then(data => {
         })
-        .catch(error => alert(error));
+        .catch(error => console.log(error));
+}
+
+function createConfetti(){
+    var button = document.querySelector("#saveButton");
+    var config = {angle:90,spread:360, elementCount:100};
+    confetti(button, config);
 }
 
 // FUNCTION - HELPER TO ALLOW FOR RADIO BUTTONS TO BE UNSELECTED
