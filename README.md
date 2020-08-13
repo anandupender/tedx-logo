@@ -13,6 +13,7 @@ View more information on [our site](https://www.ted.com/about/programs-initiativ
 [Animate.css](https://animate.style/) adds out of the box animations  
 [FileSaver](https://github.com/eligrey/FileSaver.js/) lets us download canvas elements as images  
 [JSZip](https://stuk.github.io/jszip/) allows us to wrap up a few files into a single downloadable zip file   
+[dom-confetti](https://github.com/daniel-lundin/dom-confetti) for some fun confetti animations
 
 ## Context   
 Created in the midst of the COVID-19 Pandemic of 2020. Ideated on Google Docs and Iterated on Google Meet - remote work life.
