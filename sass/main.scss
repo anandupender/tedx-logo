@@ -60,7 +60,7 @@ a:hover{
 }
 
 #header{
-    position: fixed;
+    position: absolute;
     display: flex;
     flex-direction: row;
     justify-content: space-between;
@@ -142,9 +142,10 @@ a:hover{
         flex-direction: row;
         height: auto;
         margin-top:-140px;
-        padding-top:140px;
-        padding-bottom:140px;
+        padding-top:200px;
+        padding-bottom:20px;
         z-index:1;
+        height: calc(100% - 90px);
 
         ::selection{
             background-color: var(--black);
@@ -244,6 +245,7 @@ a:hover{
             color:var(--light);
             border-radius: 5px;
             font-weight: bold;
+            transition:border ease 200ms, color ease 200ms;
         }
         
         #modifiers input[type="radio"]:checked + label {
@@ -266,10 +268,10 @@ a:hover{
         border-radius: 50%;
         text-align: center;
         padding:0px;
-        color: var(--black);
-        border: 2px solid var(--black);
+        color: var(--light);
+        border: 2px solid var(--light);
         background-color: var(--pure-white);
-        transition:transform ease 500ms;
+        transition:transform ease 500ms, border ease 500ms, color ease 500ms;
         transform:rotate(10deg);
         outline: none;
     }
@@ -277,8 +279,12 @@ a:hover{
     #saveButton:hover{
         cursor: pointer;
         transform:rotate(0deg);
-        color:var(--white);
-        background-color: var(--black);
+        color:var(--black);
+        border-color: var(--black);
+    }
+    #saveButton:hover::after{
+        content:' \01F389';
+        opacity: 1;
     }
     #saveButton:active{
         transform: rotate(360deg);
@@ -358,10 +364,10 @@ button {
 
 #mouse{
     position: absolute;
-    bottom:15px;
+    bottom:18px;
     img{
-        height:50px;
-        width:50px;
+        height:45px;
+        width:45px;
         transition: transform 200ms ease, opacity 200ms ease;
         opacity: .6;
     }

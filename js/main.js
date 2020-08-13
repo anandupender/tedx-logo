@@ -48,12 +48,12 @@ logo.src = 'assets/logo.png';
 
 // GLOBAL CONSTANTS - TIPS
 const tipBox = document.querySelector("#tipBox");
-const tipRed = "Tip: We have a new official TED red (#eb0028 or r235 g0 b40)!";
-const tipMultiWord = "Tip: Multi-word event names start on the second line";
-const tipWordWrap = "Tip: When the name gets too long, it wraps to the next line";
-const tipFinal = "Tip: There can be a max of three lines of event name text";
-const tipLong = "Tip: The first word can have 15 characters maximum";
-const tipTooLong = "Tip: Your event name is too long or has a word that is too long";
+const tipRed = "<strong>Tip:</strong> We have a new official TED red: #EB0028 or r235 g0 b40!";
+const tipMultiWord = "<strong>Tip:</strong> Multi-word event names start on the second line";
+const tipWordWrap = "<strong>Tip:</strong> When the name gets too long, it wraps to the next line";
+const tipFinal = "<strong>Tip:</strong> There can be a max of three lines of event name text";
+const tipLong = "<strong>Tip:</strong> The first word can have 15 characters maximum";
+const tipTooLong = "<strong>Tip:</strong> Your event name is too long or has a word that is too long";
 
 // GLOBAL VARIABLES - USER INPUT
 let input = document.querySelector('#eventName');
@@ -267,6 +267,7 @@ var savedSection = document.querySelector(".savedContainer");
 function saveImage(){
     if(input.value != ""){
         prepForDownload("black");
+        uploadToAirtable(input.value);
     }else{
         alert("Hold your horses! You can download your logos after entering your event name.");
     }
@@ -307,6 +308,18 @@ function prepForDownload(color){
             });
         }
     });
+}
+
+// FUNCTION - SAVE DATABASE RECORD FOR ANALYTICS
+function uploadToAirtable(value){
+    fetch("/.netlify/functions/create", {
+        method: "POST",
+        body: JSON.stringify(value)
+        }).then(response => response.json())
+        .then(data => {
+            console.log(data);
+        })
+        .catch(error => alert(error));
 }
 
 // FUNCTION - HELPER TO ALLOW FOR RADIO BUTTONS TO BE UNSELECTED
