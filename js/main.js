@@ -312,9 +312,16 @@ function prepForDownload(color){
 
 // FUNCTION - SAVE DATABASE RECORD FOR ANALYTICS
 function uploadToAirtable(value){
+
+    var toSend = {"fields":
+        {
+        "Event Name": value,
+        }
+    }
+
     fetch("/.netlify/functions/create", {
         method: "POST",
-        body: JSON.stringify(value)
+        body: JSON.stringify(toSend)
         }).then(response => response.json())
         .then(data => {
             console.log(data);
