@@ -50,8 +50,8 @@ logo.src = 'assets/logo.png';
 const tipBox = document.querySelector("#tipBox");
 const tipRed = "<strong>Tip:</strong> We have a new official TED red: #EB0028 or r235 g0 b40!";
 const tipMultiWord = "<strong>Tip:</strong> Multi-word event names start on the second line";
-const tipWordWrap = "<strong>Tip:</strong> When the name gets too long, it wraps to the next line";
-const tipFinal = "<strong>Tip:</strong> There can be a max of three lines of event name text";
+const tipWordWrap = "<strong>Tip:</strong> When your name gets too long, it wraps to the next line";
+const tipFinal = "<strong>Tip:</strong> There can be a maximum of three lines of event name text";
 const tipLong = "<strong>Tip:</strong> The first word can have 15 characters maximum";
 const tipTooLong = "<strong>Tip:</strong> Your event name is too long or has a word that is too long";
 
@@ -145,6 +145,7 @@ function updateValue(userInput, currCanvas, currCtx,color){
                 currCtx.fillStyle = textColor;
             }
 
+            // if there is a modifier
             if(currEventModifier != "" && currLine == newLines.length - 1){
                 let splitWords = newLines[currLine].split(" ");
                 let writtenWords = "";
@@ -297,9 +298,9 @@ function prepForDownload(color){
             .then(function (blob) {
                 saveAs(blob, "tedx.zip");
                 // alert("Congratulations! Check out that gorgeous logo of yours!");
-                if(currEventModifier != ""){
-                    currEventModifier = " " + currEventModifier;
-                }
+                // if(currEventModifier != ""){
+                //     currEventModifier = " " + currEventModifier;
+                // }
                 // savedSection.innerHTML = "Congrats TEDx" + input.value + currEventModifier + " Organizer!";
                 // topSection.classList.add("saved");
                 // window.setTimeout(function (){
@@ -357,8 +358,9 @@ for(var i = 0; i < options.length;i++){
                 }
             }
         }
-        if(input.value){
+        if(input.value != ""){
             updateValue(input.value,canvas,ctx);
+            updateValue(input.value,canvas,ctx);    //not sure why but I have to do it twice
         }
         this.previous = this.checked;        
     }
