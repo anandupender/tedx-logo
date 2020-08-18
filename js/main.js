@@ -111,6 +111,9 @@ function prepareUserInput(){
         if(input.value.toLowerCase().includes(easter2.name)){
             window.open(easter2.url, '_blank');
         }
+        if(input.value.toLowerCase().includes("tedx")){
+            alert("There's no need to write TEDx in the event name itself. We add that part automatically.");
+        }
     });
 }
 
