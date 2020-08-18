@@ -71,6 +71,9 @@ const tedxImage = document.querySelector("#tedxHighlights");
 let counter = 1;
 let numImages = 4;
 
+// BAD WORDS
+import badWords from './bad.js';
+
 window.onload = function() {
     createCanvas();
     prepareUserInput();
@@ -107,7 +110,22 @@ function prepareUserInput(){
         if(input.value != ""){
             demoToggle = false; 
         }
-        updateValue(input.value, canvas, ctx,"black");
+
+        var containsBad = false;
+        var splitWords = input.value.split(" ");
+        for(var i = 0; i < splitWords.length;i++){
+            if(badWords.includes(splitWords[i])){
+                containsBad = true;
+            }
+        }
+
+        if(containsBad){
+            input.value = input.value.substring(0, input.value.length - 1);   //remove letter
+            alert("Please use this tool for event names only.");
+        }else{
+            updateValue(input.value, canvas, ctx,"black");
+        }
+
         if(input.value.toLowerCase().includes(easter2.name)){
             window.open(easter2.url, '_blank');
         }else if(input.value.toLowerCase().includes(easter3.name)){
@@ -248,7 +266,6 @@ function checkAndSplitWords(fullWord){
             }else{
                 if(splitWords[i][0] != undefined){
                     toReturn[currLine] += splitWords[i][0].toUpperCase() + splitWords[i].slice(1, splitWords[i].length) + " ";
-                    console.log(toReturn[currLine]);
 
                 }else{
                     toReturn[currLine] += splitWords[i] + " ";
@@ -301,7 +318,7 @@ function prepForDownload(color){
 
     //TODO: fix this janky way of waiting till all images uploaded before saving
     canvasTemp.toBlob(function (blob) {
-        zip.file(color+".png", blob);
+        zip.file("logo-"+color+".png", blob);
         if(color == "black"){
             prepForDownload("white");
         }else{
@@ -468,15 +485,3 @@ const easter3 = {name:"home",url:"https://www.ted.com/"};
 //         console.log(testWordInput);
 //     }, true);
 // }
-
-// SOME SORT OF LIBRARY THAT HELPS YOU GET THE CHARACTERISTICS OF A FONT
-// const metrics = FontMetrics({
-//     fontFamily: 'Helvetica',
-//     fontWeight: 'normal',
-//     fontSize: 200,
-//     origin: 'baseline'
-//   })
-//   console.log(metrics);
-
-
-
