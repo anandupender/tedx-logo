@@ -74,7 +74,7 @@ let numImages = 4;
 window.onload = function() {
     createCanvas();
     prepareUserInput();
-    updateValue("", canvas,ctx);
+    updateValue("", canvas,ctx,"black");
     // FEATURE: SHOW PLACEHOLDER NAMES
     window.setInterval(function(){
         showPlaceholderExamples();
@@ -107,9 +107,11 @@ function prepareUserInput(){
         if(input.value != ""){
             demoToggle = false; 
         }
-        updateValue(input.value, canvas, ctx);
+        updateValue(input.value, canvas, ctx,"black");
         if(input.value.toLowerCase().includes(easter2.name)){
             window.open(easter2.url, '_blank');
+        }else if(input.value.toLowerCase().includes(easter3.name)){
+            window.open(easter3.url, '_blank');
         }
         if(input.value.toLowerCase().includes("tedx")){
             alert("There's no need to write TEDx in the event name itself. We add that part automatically.");
@@ -125,9 +127,9 @@ function updateValue(userInput, currCanvas, currCtx,color){
     currCtx.clearRect(0,0,currCanvas.clientWidth,currCanvas.height);
     var textColor;
     if(color == "black"){
-        textColor = "#FFF";
-    }else{
         textColor = "#000";
+    }else{
+        textColor = "#FFF";
     }
 
     //Draw Logo
@@ -244,7 +246,13 @@ function checkAndSplitWords(fullWord){
                 currLine++;
                 i--; //don't go on to the next one if it doesn't fit
             }else{
-                toReturn[currLine] += splitWords[i] + " ";
+                if(splitWords[i][0] != undefined){
+                    toReturn[currLine] += splitWords[i][0].toUpperCase() + splitWords[i].slice(1, splitWords[i].length) + " ";
+                    console.log(toReturn[currLine]);
+
+                }else{
+                    toReturn[currLine] += splitWords[i] + " ";
+                }
             }
         }else{
             return null;  //too long, show nothing!
@@ -300,16 +308,6 @@ function prepForDownload(color){
             zip.generateAsync({type:"blob"})
             .then(function (blob) {
                 saveAs(blob, "tedx.zip");
-                // alert("Congratulations! Check out that gorgeous logo of yours!");
-                // if(currEventModifier != ""){
-                //     currEventModifier = " " + currEventModifier;
-                // }
-                // savedSection.innerHTML = "Congrats TEDx" + input.value + currEventModifier + " Organizer!";
-                // topSection.classList.add("saved");
-                // window.setTimeout(function (){
-                //     topSection.classList.remove("saved");
-                // },3000);
-                // alert("🎉 Woohoo! Congrats on your official TEDx Logo");
             });
         }
     });
@@ -362,8 +360,8 @@ for(var i = 0; i < options.length;i++){
             }
         }
         if(input.value != ""){
-            updateValue(input.value,canvas,ctx);
-            updateValue(input.value,canvas,ctx);    //not sure why but I have to do it twice
+            updateValue(input.value,canvas,ctx,"black");
+            updateValue(input.value,canvas,ctx,"black");    //not sure why but I have to do it twice
         }
         this.previous = this.checked;        
     }
@@ -387,7 +385,7 @@ function showTip(tip){
 function showPlaceholderExamples(){
     if((input.value == "" || input.value == " ")){
         demoToggle = true;
-        updateValue(demoNames[demoCounter],canvas,ctx);
+        updateValue(demoNames[demoCounter],canvas,ctx,"black");
         demoCounter++;
         if(demoCounter == demoNames.length){
             demoCounter = 0;
@@ -424,6 +422,7 @@ const easter1 = `
 `;
 
 const easter2 = {name:"anandupender",url:"https://www.anandupender.com/"};
+const easter3 = {name:"home",url:"https://www.ted.com/"};
 
 // DEMO FEATURE: MAKE BUTTONS INTERACT WITH MOUSE POSITION
 
