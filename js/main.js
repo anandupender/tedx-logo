@@ -48,7 +48,7 @@ logo.src = 'assets/logo.png';
 
 // GLOBAL CONSTANTS - TIPS
 const tipBox = document.querySelector("#tipBox");
-const tipRed = "<strong>Tip:</strong> We have a new official TED red: #EB0028 or r235 g0 b40!";
+// const tipRed = "<strong>Tip:</strong> We have a new official TED red: #EB0028 or r235 g0 b40!";
 const tipMultiWord = "<strong>Tip:</strong> Multi-word event names start on the second line";
 const tipWordWrap = "<strong>Tip:</strong> When your name gets too long, it wraps to the next line";
 const tipFinal = "<strong>Tip:</strong> There can be a maximum of three lines of event name text";
@@ -239,9 +239,9 @@ function updateValue(userInput, currCanvas, currCtx,color){
             futureTip = tipWordWrap;
         }else if(newLines.length == 3){
             futureTip = tipFinal;
-        }else{
-            futureTip = tipRed;
-        }
+        // }else{
+        //     futureTip = tipRed;
+        // }
 
         //remove tip when there is no text
         if(input.value == ""){
