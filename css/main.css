@@ -19,6 +19,7 @@ This CSS resource incorporates links to font software which is the valuable copy
   --white:#f8f8f8;
   --pure-white:#fff;
   --red:#eb0028;
+  --animate-delay: 3s;
 }
 
 .dark {
