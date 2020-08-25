@@ -239,6 +239,8 @@ function updateValue(userInput, currCanvas, currCtx,color){
             futureTip = tipWordWrap;
         }else if(newLines.length == 3){
             futureTip = tipFinal;
+        }else{
+            futureTip = "";
         }
         // }else{
         //     futureTip = tipRed;
