@@ -7,14 +7,16 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>TEDx Logo Generator</title>
     <link rel="stylesheet" href="./css/main.css">
-    <link rel="preload" as="font" href="assets/helvetica.otf" type="font/otf" crossorigin="anonymous">
-    <link rel="preload" as="font" href="assets/helvetica-bold.otf" type="font/otf" crossorigin="anonymous">
     <link rel="preload" as="image" href="assets/logo.png">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;700;900&display=swap" rel="stylesheet">
     <link rel="apple-touch-icon" sizes="180x180" href="assets/apple-touch-icon.png">
     <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32x32.png">
     <link rel="icon" type="image/png" sizes="16x16" href="assets/favicon-16x16.png">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.0.0/animate.min.css"/>
+    <link rel="preload" href="/assets/Fonts/1489424/37953885-0443-4c72-a693-9152a9f5a901.woff2" as="font" crossorigin="anonymous" />
+    <link rel="preload" href="/assets/Fonts/1489424/fcce277c-07e2-4c88-ad8b-a71b484e2cbe.woff" as="font" crossorigin="anonymous" />
+    <link rel="preload" href="/assets/Fonts/1489452/7ce0a2f5-eb00-46aa-919c-5b3f3667646c.woff2" as="font" crossorigin="anonymous" />
+    <link rel="preload" href="/assets/Fonts/1489452/cad22c74-45b4-4c49-9e6a-0cd3768a7bc7.woff" as="font" crossorigin="anonymous" />
 </head>
 <body>
 
@@ -27,6 +29,53 @@
             Your TEDx logo is a big part of your event! For the best experience in creating it, please open this page on a computer or larger screen. Thanks!
         </div>
 
+    </div>
+
+    <div id="loader">
+        <svg id="main-svg" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 2000 750">
+            <defs>
+                <linearGradient id="left-to-right">
+                    <stop offset="0" stop-color="#eb0028">
+                      <animate dur=".75s" attributeName="offset" begin=".25s" fill="freeze" from="0" to="1" />
+                    </stop>
+                    <stop offset="0" stop-color="#f8f8f8">
+                      <animate dur=".75s" attributeName="offset" begin=".25s" fill="freeze" from="0" to="1" />
+                    </stop>
+                  </linearGradient>
+                  <linearGradient id="left-to-right2">
+                    <stop offset="0" stop-color="#eb0028">
+                      <animate dur=".7s" attributeName="offset" begin="1s" fill="freeze" from="0" to="1" />
+                    </stop>
+                    <stop offset="0" stop-color="#f8f8f8">
+                      <animate dur=".7s" attributeName="offset" begin="1s" fill="freeze" from="0" to="1" />
+                    </stop>
+                  </linearGradient>
+                  <linearGradient id="left-to-right3">
+                    <stop offset="0" stop-color="#eb0028">
+                      <animate dur=".85s" attributeName="offset" begin="1.7s" fill="freeze" from="0" to="1" />
+                    </stop>
+                    <stop offset="0" stop-color="#f8f8f8">
+                      <animate dur=".85s" attributeName="offset" begin="1.7s" fill="freeze" from="0" to="1" />
+                    </stop>
+                  </linearGradient>
+                  <linearGradient id="left-to-right4">
+                    <stop offset="0" stop-color="#eb0028">
+                      <animate dur=".55s" attributeName="offset" begin="2.55s" fill="freeze" from="0" to="1" />
+                    </stop>
+                    <stop offset="0" stop-color="#f8f8f8">
+                      <animate dur=".55s" attributeName="offset" begin="2.55s" fill="freeze" from="0" to="1" />
+                    </stop>
+                  </linearGradient>
+            </defs>
+            <path class="svg-1" d="M205.62,240.63H50.79V98.84H530.5V240.63H375.73V652.07H205.62Z"  
+            fill="url(#left-to-right)"/>
+            <path class="svg-1" d="M556.94,98.84h465.67V240.63H727.16v68.94h295.45V441.34H727.16v68.94h295.53V652.07H556.94Z" 
+            fill="url(#left-to-right2)"/>
+            <path class="svg-1" d="M1051.26,98.84h279.33c184.12,0,249.2,136.37,249.2,275.8,0,169.74-89.76,277.43-282.44,277.43H1051.26Zm170.21,411.44H1288c106,0,121.54-86,121.54-138,0-34.8-10.89-131.65-133.93-131.65h-54.17Z" 
+            fill="url(#left-to-right3)"/>
+            <path class="svg-1" d="M1824.37,440.24,1772.44,354l-50.63,86.22H1597.1L1715.49,265.9l-114-166.76h124.75l46.2,82.43L1820,99.14h124.72l-114,166.76,118.4,174.34Z" 
+            fill="url(#left-to-right4)"/>
+        </svg>
     </div>
 
 
@@ -58,7 +107,7 @@
                         <label for="salon">Salon</label>
                     </div>
                 </div>
-                <button onclick="saveImage()" id="saveButton">Download</button>
+                <button id="saveButton">Download</button>
 
             </div>
             <div class="savedContainer"></div>
@@ -84,10 +133,6 @@
         </div>
     </div>
 
-    <div class="demo">
-        <a href="mailto:anand@ted.com">DEMO SITE by anand@ted.com</a>
-    </div>
-
     <div class="footer left animate__animated animate__fadeIn animate__delay-2s">
         <a target="_blank" href="mailto:anand@ted.com">Share Feedback</a>
     </div>
@@ -103,6 +148,22 @@
     <script src="./js/toBlob.js"></script>
     <script src="./js/jszip.js"></script>
     <script type="module" src="./js/main.js"></script>
+
+    <script type="text/javascript">
+        var MTUserId='bbf2739d-0d95-4c85-b4b0-93d682d5261c';
+        var MTFontIds = new Array();
+    
+        MTFontIds.push("1489424");
+        MTFontIds.push("1489452");
+        (function() {
+            var mtTracking = document.createElement('script');
+            mtTracking.type='text/javascript';
+            mtTracking.async='true';
+            mtTracking.src='/js/mtiFontTrackingCode.js';
+    
+            (document.getElementsByTagName('head')[0]||document.getElementsByTagName('body')[0]).appendChild(mtTracking);
+        })();
+    </script>
 
 </body>
 </html>

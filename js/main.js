@@ -100,7 +100,7 @@ function createCanvas(){
     canvas.style.height = canvasHeight/scaleFactor + "px";
     ctx = canvas.getContext("2d");
     ctx.scale(scaleFactor,scaleFactor);
-    ctx.font = "normal " + fontSize + " Helvetica";
+    ctx.font = "normal " + fontSize + " MainFont";
 }
 
 // FUNCTION - GET USER EVENT NAME INPUT AND FILTER OUT INPROPER CHARACTERS
@@ -175,9 +175,9 @@ function updateValue(userInput, currCanvas, currCtx,color){
                 for(let i = 0; i < splitWords.length;i++){
                     let prevWidth = currCtx.measureText(writtenWords).width; //calculate width before changing font
                     if(i == splitWords.length - 1) { //bold last word!
-                        currCtx.font = "bold " + fontSize + " Helvetica";
+                        currCtx.font = "bold " + fontSize + " MainFont";
                     }else{
-                        currCtx.font = "normal " + fontSize + " Helvetica";
+                        currCtx.font = "normal " + fontSize + " MainFont";
                         splitWords[i] += " ";
                     }
 
@@ -201,7 +201,7 @@ function updateValue(userInput, currCanvas, currCtx,color){
                     }
                 }
             }else{
-                currCtx.font = "normal " + fontSize + " Helvetica";
+                currCtx.font = "normal " + fontSize + " MainFont";
                 let xAdder = 0;
                 let yAdder = 0;
                 if(userInput.trim().indexOf(' ') != -1 || newLines[currLine].length > 15){ // multiple words or long word
@@ -305,6 +305,8 @@ function saveImage(){
         alert("Hold your horses! You can download your logos after entering your event name.");
     }
 }
+
+document.querySelector("#saveButton").addEventListener("click",saveImage);
 
 // FUNCTION - CREATE TEMPORARY CANVAS TO CROP TO PROPER SIZE 
 function prepForDownload(color){

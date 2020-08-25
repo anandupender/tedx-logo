@@ -1,13 +1,16 @@
 @charset "UTF-8";
+/*
+This CSS resource incorporates links to font software which is the valuable copyrighted property of Monotype and/or its suppliers. You may not attempt to copy, install, redistribute, convert, modify or reverse engineer this font software. Please contact Monotype with any questions regarding Web Fonts: http://www.fonts.com
+*/
 @font-face {
-  font-family: "Helvetica";
+  font-family: "MainFont";
   font-weight: normal;
-  src: url("../assets/helvetica.otf");
+  src: url("/assets/Fonts/1489424/37953885-0443-4c72-a693-9152a9f5a901.woff2") format("woff2"), url("/assets/Fonts/1489424/fcce277c-07e2-4c88-ad8b-a71b484e2cbe.woff") format("woff");
 }
 @font-face {
-  font-family: "Helvetica";
+  font-family: "MainFont";
   font-weight: bold;
-  src: url("../assets/helvetica-bold.otf");
+  src: url("/assets/Fonts/1489452/7ce0a2f5-eb00-46aa-919c-5b3f3667646c.woff2") format("woff2"), url("/assets/Fonts/1489452/cad22c74-45b4-4c49-9e6a-0cd3768a7bc7.woff") format("woff");
 }
 :root {
   --black:#111;
@@ -59,6 +62,47 @@ a:hover {
   opacity: 1 !important;
 }
 
+#loader {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 100000;
+  background-color: var(--white);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  opacity: 1;
+  animation: fadeOut 1s ease forwards;
+  animation-delay: 4s;
+}
+#loader svg {
+  width: 50vw;
+  opacity: 1;
+  animation: fadeOut 0.5s ease forwards 3.5s, zoomIn 1s ease forwards;
+}
+#loader svg .svg-1 {
+  stroke: var(--red);
+  stroke-width: 18px;
+}
+
+@keyframes zoomIn {
+  from {
+    width: 10vw;
+  }
+  to {
+    width: 50vw;
+  }
+}
+@keyframes fadeOut {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
 #header {
   position: absolute;
   display: flex;
@@ -348,22 +392,6 @@ button {
 #mouse img:hover {
   transform: translateY(6px);
   opacity: 1;
-}
-
-.demo {
-  position: fixed;
-  bottom: 0px;
-  right: 0px;
-  padding: 12px;
-  font-size: 12px;
-  font-weight: bold;
-  color: var(--white);
-  background-color: var(--black);
-  z-index: 1000;
-  border-top-left-radius: 5px;
-}
-.demo a {
-  color: var(--white) !important;
 }
 
 #mobileFallback {
