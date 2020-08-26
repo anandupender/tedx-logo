@@ -75,13 +75,13 @@ a:hover {
   justify-content: center;
   align-items: center;
   opacity: 1;
-  animation: fadeOut 1s ease forwards;
+  animation: fadeOutNow 1s ease forwards;
   animation-delay: 4s;
 }
 #loader svg {
   width: 50vw;
   opacity: 1;
-  animation: fadeOut 0.5s ease forwards 3.5s, zoomIn 1s ease forwards;
+  animation: fadeOutNow 0.5s ease forwards 3.5s, zoomIn 1s ease forwards;
 }
 #loader svg .svg-1 {
   stroke: var(--red);
@@ -96,12 +96,14 @@ a:hover {
     width: 50vw;
   }
 }
-@keyframes fadeOut {
+@keyframes fadeOutNow {
   from {
     opacity: 1;
+    z-index: 100000;
   }
   to {
     opacity: 0;
+    z-index: -1;
   }
 }
 #header {

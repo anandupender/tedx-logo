@@ -81,10 +81,10 @@ a:hover{
             stroke-width: 18px;
         }
         opacity:1;
-        animation: fadeOut .5s ease forwards 3.5s, zoomIn 1s ease forwards;
+        animation: fadeOutNow .5s ease forwards 3.5s, zoomIn 1s ease forwards;
     }
     opacity:1;
-    animation: fadeOut 1s ease forwards;
+    animation: fadeOutNow 1s ease forwards;
     animation-delay: 4s;
 }
 
@@ -97,12 +97,14 @@ a:hover{
     }
 }
 
-@keyframes fadeOut{
+@keyframes fadeOutNow{
     from{
         opacity: 1;
+        z-index:100000;
     }
     to{
         opacity: 0;
+        z-index: -1;
     }
 }
 
