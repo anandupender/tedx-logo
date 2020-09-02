@@ -72,6 +72,10 @@ a.link:hover {
   color: var(--white);
 }
 
+a:hover {
+  opacity: 1 !important;
+}
+
 #loader {
   position: fixed;
   top: 0;
