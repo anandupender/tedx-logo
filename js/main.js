@@ -60,6 +60,9 @@ let input = document.querySelector('#eventName');
 var currContentHeight;
 var currContentWidth;
 let currEventModifier = "";
+const toolbar = document.querySelector("#toolbar");
+var firstTime = true;
+
 
 // GLOBAL VARIABLES - DEMO
 const demoNames = ["Sydney","Grand Rapids","International School of Hyderabad", "Secretaria De Educacion Del Estado De Zacatecas"];
@@ -110,6 +113,12 @@ function prepareUserInput(){
         if(input.value != ""){
             demoToggle = false; 
         }
+
+        //remove hand pointer
+        if(firstTime){
+            toolbar.classList.add("noHand");
+        }
+        firstTime = false;
 
         var containsBad = false;
         var splitWords = input.value.split(" ");
