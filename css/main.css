@@ -257,15 +257,23 @@ a:hover {
   box-shadow: 0px 6px 15px 5px rgba(0, 0, 0, 0.1);
   margin-right: 60px;
 }
+#toolbarContainer #toolbar img {
+  height: 17px;
+  margin-right: 8px;
+}
 #toolbarContainer #toolbar input#eventName {
   font-size: 18px;
-  padding: 12px;
-  padding-bottom: 10px;
+  padding: 10px;
   width: 80%;
   font-weight: bold;
   border: 2px solid var(--light);
   border-radius: 5px;
   margin-right: 20px;
+  background-image: url("/assets/logo.png");
+  background-size: auto 15px;
+  background-repeat: no-repeat;
+  padding-left: 70px;
+  background-position: 12px 47%;
 }
 #toolbarContainer #toolbar input#eventName:focus {
   outline: none !important;
@@ -292,7 +300,7 @@ a:hover {
   font-weight: bold;
   transition: border ease 200ms, color ease 200ms;
 }
-#toolbarContainer #toolbar #modifiers input[type=radio]:checked + label {
+#toolbarContainer #toolbar input[type=radio]:checked + label {
   background-color: var(--black);
   color: white;
 }
@@ -301,12 +309,15 @@ a:hover {
   color: var(--black);
   border-color: var(--black);
 }
+#toolbarContainer #toolbar #studioContainer {
+  margin-left: 24px;
+}
 #toolbarContainer #toolbar::before {
   content: "";
   background-image: url("/assets/hand.svg");
   position: absolute;
   top: -45px;
-  left: 35px;
+  left: 100px;
   background-size: contain;
   background-repeat: no-repeat;
   width: 65px;

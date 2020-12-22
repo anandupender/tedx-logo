@@ -60,6 +60,8 @@ let input = document.querySelector('#eventName');
 var currContentHeight;
 var currContentWidth;
 let currEventModifier = "";
+var currStudioModifier = "";
+var studioToggle = false;
 const toolbar = document.querySelector("#toolbar");
 var firstTime = true;
 
@@ -104,6 +106,7 @@ function createCanvas(){
     ctx = canvas.getContext("2d");
     ctx.scale(scaleFactor,scaleFactor);
     ctx.font = "normal " + fontSize + " MainFont";
+    ctx.textAlign = "start";
 }
 
 // FUNCTION - GET USER EVENT NAME INPUT AND FILTER OUT INPROPER CHARACTERS
@@ -148,7 +151,12 @@ function prepareUserInput(){
 
 // FUNCTION - UPDATE CANVAS WITH USER INPUT AND CURRENT EVENT MODIFIER
 function updateValue(userInput, currCanvas, currCtx,color){
-    userInput += " " + currEventModifier;
+    var fullInput = userInput;
+    if(currEventModifier != ""){
+        fullInput += " " + currEventModifier + " " + currStudioModifier;
+    }else{
+        fullInput += " " + currStudioModifier;
+    }
 
     // Clear screen
     currCtx.clearRect(0,0,currCanvas.clientWidth,currCanvas.height);
@@ -163,7 +171,8 @@ function updateValue(userInput, currCanvas, currCtx,color){
     currCtx.drawImage(logo, canvasMargin, canvasMargin,imageWidth,imageHeight);
 
     currCtx.fillStyle = textColor;
-    let newLines = checkAndSplitWords(userInput);
+    let newLines = checkAndSplitWords(fullInput);
+    let firstLine = false;
 
     if(newLines != null){
         let maxWidth = 0;
@@ -177,14 +186,17 @@ function updateValue(userInput, currCanvas, currCtx,color){
                 currCtx.fillStyle = textColor;
             }
 
-            // if there is a modifier
-            if(currEventModifier != "" && currLine == newLines.length - 1){
+            // if there is a modifier and we're on its line
+            if((currEventModifier != "" || studioToggle) && currLine == newLines.length - 1){
                 let splitWords = newLines[currLine].split(" ");
                 let writtenWords = "";
                 for(let i = 0; i < splitWords.length;i++){
                     let prevWidth = currCtx.measureText(writtenWords).width; //calculate width before changing font
-                    if(i == splitWords.length - 1) { //bold last word!
+                    if(i == splitWords.length - 1 || (studioToggle && currEventModifier != "" && (i == splitWords.length - 2))) { //bold modifiers
                         currCtx.font = "bold " + fontSize + " MainFont";
+                        if(splitWords.length == 2){ //if only two modifiers on their own line
+                            splitWords[i] += " ";
+                        }
                     }else{
                         currCtx.font = "normal " + fontSize + " MainFont";
                         splitWords[i] += " ";
@@ -196,7 +208,11 @@ function updateValue(userInput, currCanvas, currCtx,color){
                     if(splitWords.length == 2 && newLines[currLine].length < 15  && newLines.length == 1){ 
                         xAdder = imageWidth + logoRightSpace;
                     }else{
-                        yAdder = ((letterXHeight + xHeight)*(currLine+1))
+                        if(firstLine){
+                            yAdder = ((letterXHeight + xHeight)*(currLine))
+                        }else{
+                            yAdder = ((letterXHeight + xHeight)*(currLine+1))
+                        }
                     }
                     currCtx.fillText(splitWords[i], canvasMargin + prevWidth + xAdder, canvasMargin + imageHeight + yAdder);
                     writtenWords+=splitWords[i];
@@ -217,6 +233,7 @@ function updateValue(userInput, currCanvas, currCtx,color){
                     yAdder = ((letterXHeight + xHeight)*(currLine+1));
                 }else{
                     xAdder = imageWidth + logoRightSpace;
+                    firstLine = true;
                 }
                 currCtx.fillText(newLines[currLine], canvasMargin + xAdder, canvasMargin + imageHeight + yAdder);
 
@@ -266,19 +283,25 @@ function updateValue(userInput, currCanvas, currCtx,color){
 // FUNCTION - CHECK LINE WIDTH OF WORDS AND SPLIT INTO MULTIPLE LINES
 function checkAndSplitWords(fullWord){
     let splitWords = fullWord.split(" ");
+
+    //studio and modifier should live on same line
+    if(studioToggle && currEventModifier != ""){
+        splitWords[splitWords.length-2] = splitWords[splitWords.length-2] + " " + splitWords[splitWords.length-1];
+        splitWords.pop();
+    }
+
     var toReturn = ["","",""];
     let currLine = 0;
-
     for(var i = 0; i < splitWords.length;i++){
         if(currLine < 3){
-            if(ctx.measureText(toReturn[currLine] + splitWords[i]).width > imageWidth*4){
+
+            if((ctx.measureText(toReturn[currLine] + splitWords[i]).width > imageWidth*4 && currLine > 0) || (ctx.measureText(toReturn[currLine] + splitWords[i]).width > (imageWidth*4 - (imageWidth + logoRightSpace)) && currLine == 0)){
                 toReturn[currLine] = toReturn[currLine].trim();
                 currLine++;
                 i--; //don't go on to the next one if it doesn't fit
             }else{
                 if(splitWords[i][0] != undefined){
                     toReturn[currLine] += splitWords[i][0].toUpperCase() + splitWords[i].slice(1, splitWords[i].length) + " ";
-
                 }else{
                     toReturn[currLine] += splitWords[i] + " ";
                 }
@@ -287,16 +310,18 @@ function checkAndSplitWords(fullWord){
             return null;  //too long, show nothing!
         }
     }
+    console.log(toReturn);
 
     //truncate array to just the lines with values
-    for(var j = 0; j < 3;j++){
-        if(toReturn[j] === "" || toReturn[j] === undefined){
-            toReturn.splice(j,2)
+    for(var j = 2; j >=0 ;j--){
+        if(toReturn[j] === "" || toReturn[j] === undefined || toReturn[j] === " "){
+            toReturn.pop();
         }
         else{
             toReturn[j] = toReturn[j].trim();
         }
     }
+    console.log(toReturn);
     return toReturn;
 }
 
@@ -373,7 +398,7 @@ function createConfetti(){
 }
 
 // FUNCTION - HELPER TO ALLOW FOR RADIO BUTTONS TO BE UNSELECTED
-var options = document.querySelectorAll('input[type="radio"]')
+var options = document.querySelector("#modifiers").querySelectorAll('input[type="radio"]')
 for(var i = 0; i < options.length;i++){
     options[i].onclick = function(){
         if (this.previous) {
@@ -381,7 +406,7 @@ for(var i = 0; i < options.length;i++){
             currEventModifier = "";
         }else{
             currEventModifier = this.value.charAt(0).toUpperCase() +  this.value.slice(1);
-            
+ 
             // set all others as false
             for(var j = 0; j < options.length;j++){
                 if(options[j] != this){
@@ -390,6 +415,7 @@ for(var i = 0; i < options.length;i++){
                 }
             }
         }
+
         if(input.value != ""){
             updateValue(input.value,canvas,ctx,"black");
             updateValue(input.value,canvas,ctx,"black");    //not sure why but I have to do it twice
@@ -397,6 +423,21 @@ for(var i = 0; i < options.length;i++){
         this.previous = this.checked;        
     }
 }
+
+// FUNCTION - HELPER TO CAPTURE STUDIO CHECKBOX CLICK
+document.querySelector("#studio").onclick = function(){
+    studioToggle = !studioToggle;
+    document.querySelector("#studio").checked = studioToggle;
+
+    if(studioToggle == true){
+        currStudioModifier = "Studio";
+        updateValue(input.value,canvas,ctx,"black");
+    }else{
+        currStudioModifier = "";
+        updateValue(input.value,canvas,ctx,"black");
+    }
+}
+
 
 // FUNCTION - SHOW TIP HELPER
 function showTip(tip){

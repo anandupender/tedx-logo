@@ -48,10 +48,9 @@
     </div>
 
     <!-- PAGE LOADING - SVG ANIMATION -->
-    <div id="loader">
+    <!-- <div id="loader">
         <svg id="main-svg" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 2000 750">
             <defs>
-                <!-- T: 25.3%, 1.4%, E:24.5%, 1.5%, D:27.8%, .9%, x:18.5% -->
                 <linearGradient id="left-to-right">
                     <stop offset="0" stop-color="#eb0028">
                       <animate dur=".75s" attributeName="offset" begin=".25s" fill="freeze" from="0" to="1" />
@@ -94,10 +93,10 @@
             <path class="svg-1" d="M1824.37,440.24,1772.44,354l-50.63,86.22H1597.1L1715.49,265.9l-114-166.76h124.75l46.2,82.43L1820,99.14h124.72l-114,166.76,118.4,174.34Z" 
             fill="url(#left-to-right4)"/>
         </svg>
-    </div>
+    </div> -->
 
 
-    <div id="header" class="animate__animated animate__fadeIn animate__delay-4s">
+    <div id="header" class="animate__animated animate__fadeIn">
         <a href="https://www.ted.com/participate/organize-a-local-tedx-event/tedx-organizer-guide/branding-promotions/logo-and-design/your-tedx-logo">
             <img src="assets/arrow.svg" alt="left-arrow" height="20" width="20">
             <div> Head back to TED.com</div>
@@ -107,15 +106,15 @@
 
     <div id="mainContainer">
         <div class="topSection" >
-            <div id="canvasContainer" class="animate__animated animate__fadeInDown animate__delay-4s">
+            <div id="canvasContainer" class="animate__animated animate__fadeInDown">
                 <canvas id="canvas"></canvas>
                 <div id="tipBox">
                 </div>
             </div>
 
-            <div id="toolbarContainer" class="animate__animated animate__fadeIn animate__delay-4s">
+            <div id="toolbarContainer" class="animate__animated animate__fadeIn">
                 <div id="toolbar">
-                    <input type="text" autocomplete="off" id="eventName" name="eventName" placeholder="Type in your event name..." autofocus>
+                    <input type="text" autocomplete="off" id="eventName" name="eventName" placeholder="Event name..." autofocus>
                     <div id="modifiers">
                         <input type="radio" id="youth" name="name" value="youth">
                         <label for="youth">Youth</label>
@@ -124,6 +123,10 @@
                         <input type="radio" id="salon" name="name" value="salon">
                         <label for="salon">Salon</label>
                     </div>
+                    <form id="studioContainer">
+                        <input type="radio" id="studio" name="name" value="studio">
+                        <label for="studio">Studio</label>
+                    </form>
                 </div>
                 <button id="saveButton">Download</button>
 
