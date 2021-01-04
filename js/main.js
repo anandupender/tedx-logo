@@ -30,6 +30,7 @@ let canvasWidth = 2920;
 let canvasHeight = 1200;
 let scaleFactor = 4;
 let canvasMargin = 30;
+let letterSpacing = -1;
 
 // GLOBAL CONSTANTS - CANVAS IMAGE
 const xPos = 50;
@@ -214,7 +215,8 @@ function updateValue(userInput, currCanvas, currCtx,color){
                             yAdder = ((letterXHeight + xHeight)*(currLine+1))
                         }
                     }
-                    currCtx.fillText(splitWords[i], canvasMargin + prevWidth + xAdder, canvasMargin + imageHeight + yAdder);
+                    currCtx.renderText(splitWords[i], canvasMargin + prevWidth + xAdder, canvasMargin + imageHeight + yAdder, letterSpacing);
+                    // currCtx.fillText(splitWords[i], canvasMargin + prevWidth + xAdder, canvasMargin + imageHeight + yAdder);
                     writtenWords+=splitWords[i];
 
                     // Keep track of max text width
@@ -235,7 +237,9 @@ function updateValue(userInput, currCanvas, currCtx,color){
                     xAdder = imageWidth + logoRightSpace;
                     firstLine = true;
                 }
-                currCtx.fillText(newLines[currLine], canvasMargin + xAdder, canvasMargin + imageHeight + yAdder);
+                currCtx.renderText(newLines[currLine], canvasMargin + xAdder, canvasMargin + imageHeight + yAdder, letterSpacing);
+
+                // currCtx.fillText(newLines[currLine], canvasMargin + xAdder, canvasMargin + imageHeight + yAdder);
 
                 // Keep track of max text width
                 if(canvasMargin + currCtx.measureText(newLines[currLine]).width + xAdder > maxWidth){
@@ -294,8 +298,11 @@ function checkAndSplitWords(fullWord){
     let currLine = 0;
     for(var i = 0; i < splitWords.length;i++){
         if(currLine < 3){
-
             if((ctx.measureText(toReturn[currLine] + splitWords[i]).width > imageWidth*4 && currLine > 0) || (ctx.measureText(toReturn[currLine] + splitWords[i]).width > (imageWidth*4 - (imageWidth + logoRightSpace)) && currLine == 0)){
+                console.log("Too Long");
+                console.log(ctx.measureText(toReturn[currLine] + splitWords[i]).width);
+                console.log(imageWidth*4 - (imageWidth + logoRightSpace));
+                console.log(imageWidth*4);
                 toReturn[currLine] = toReturn[currLine].trim();
                 currLine++;
                 i--; //don't go on to the next one if it doesn't fit
@@ -310,6 +317,7 @@ function checkAndSplitWords(fullWord){
             return null;  //too long, show nothing!
         }
     }
+
     console.log(toReturn);
 
     //truncate array to just the lines with values
@@ -321,7 +329,6 @@ function checkAndSplitWords(fullWord){
             toReturn[j] = toReturn[j].trim();
         }
     }
-    console.log(toReturn);
     return toReturn;
 }
 
@@ -395,6 +402,33 @@ function createConfetti(){
     var button = document.querySelector("#saveButton");
     var config = {angle:90,spread:360, elementCount:100};
     confetti(button, config);
+}
+
+// FUNCTION - HELPER TO ALLOW FOR LETTER SPACING IN CANVAS
+// code from here http://jsfiddle.net/davidhong/hKbJ4/
+if (CanvasRenderingContext2D && !CanvasRenderingContext2D.renderText) {
+    // @param  letterSpacing  {float}  CSS letter-spacing property
+    CanvasRenderingContext2D.prototype.renderText = function (text, x, y, letterSpacing) {
+        if (!text || typeof text !== 'string' || text.length === 0) {
+            return;
+        }
+        
+        // letterSpacing of 0 means normal letter-spacing
+        if (typeof letterSpacing === 'undefined') {
+            letterSpacing = 0;
+        }
+                
+        var characters = String.prototype.split.call(text, ''),
+            index = 0,
+            current,
+            currentPosition = x;
+                    
+        while (index < text.length) {
+            current = characters[index++];
+            this.fillText(current, currentPosition, y);
+            currentPosition += (this.measureText(current).width + letterSpacing);
+        }
+    }
 }
 
 // FUNCTION - HELPER TO ALLOW FOR RADIO BUTTONS TO BE UNSELECTED
