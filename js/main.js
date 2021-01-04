@@ -62,6 +62,7 @@ var currContentHeight;
 var currContentWidth;
 let currEventModifier = "";
 var currStudioModifier = "";
+var eventToggle = false;
 var studioToggle = false;
 const toolbar = document.querySelector("#toolbar");
 var firstTime = true;
@@ -153,7 +154,7 @@ function prepareUserInput(){
 // FUNCTION - UPDATE CANVAS WITH USER INPUT AND CURRENT EVENT MODIFIER
 function updateValue(userInput, currCanvas, currCtx,color){
     var fullInput = userInput;
-    if(currEventModifier != ""){
+    if(eventToggle){
         fullInput += " " + currEventModifier + " " + currStudioModifier;
     }else{
         fullInput += " " + currStudioModifier;
@@ -188,12 +189,12 @@ function updateValue(userInput, currCanvas, currCtx,color){
             }
 
             // if there is a modifier and we're on its line
-            if((currEventModifier != "" || studioToggle) && currLine == newLines.length - 1){
+            if((eventToggle || studioToggle) && currLine == newLines.length - 1){
                 let splitWords = newLines[currLine].split(" ");
                 let writtenWords = "";
                 for(let i = 0; i < splitWords.length;i++){
                     let prevWidth = currCtx.measureText(writtenWords).width; //calculate width before changing font
-                    if(i == splitWords.length - 1 || (studioToggle && currEventModifier != "" && (i == splitWords.length - 2))) { //bold modifiers
+                    if(i == splitWords.length - 1 || (studioToggle && eventToggle && (i == splitWords.length - 2))) { //bold modifiers
                         currCtx.font = "bold " + fontSize + " MainFont";
                         if(splitWords.length == 2){ //if only two modifiers on their own line
                             splitWords[i] += " ";
@@ -263,7 +264,7 @@ function updateValue(userInput, currCanvas, currCtx,color){
         let futureTip;
         if(newLines == null){
             futureTip = tipTooLong;
-        }else if(newLines.length == 1 && newLines[0].split(" ").length > 1 && currEventModifier==""){
+        }else if(newLines.length == 1 && newLines[0].split(" ").length > 1 && eventToggle){
             futureTip = tipMultiWord;
         }else if(newLines.length == 2){
             futureTip = tipWordWrap;
@@ -289,7 +290,7 @@ function checkAndSplitWords(fullWord){
     let splitWords = fullWord.split(" ");
 
     //studio and modifier should live on same line
-    if(studioToggle && currEventModifier != ""){
+    if(studioToggle && eventToggle){
         splitWords[splitWords.length-2] = splitWords[splitWords.length-2] + " " + splitWords[splitWords.length-1];
         splitWords.pop();
     }
@@ -438,7 +439,9 @@ for(var i = 0; i < options.length;i++){
         if (this.previous) {
             this.checked = false;
             currEventModifier = "";
+            eventToggle = false;
         }else{
+            eventToggle = true;
             currEventModifier = this.value.charAt(0).toUpperCase() +  this.value.slice(1);
  
             // set all others as false
