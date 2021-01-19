@@ -174,6 +174,7 @@ function updateValue(userInput, currCanvas, currCtx,color){
 
     currCtx.fillStyle = textColor;
     let newLines = checkAndSplitWords(fullInput);
+    console.log(newLines);
     let firstLine = false;
 
     if(newLines != null){
@@ -239,8 +240,7 @@ function updateValue(userInput, currCanvas, currCtx,color){
                     firstLine = true;
                 }
                 currCtx.renderText(newLines[currLine], canvasMargin + xAdder, canvasMargin + imageHeight + yAdder, letterSpacing);
-
-                // currCtx.fillText(newLines[currLine], canvasMargin + xAdder, canvasMargin + imageHeight + yAdder);
+                console.log("here");
 
                 // Keep track of max text width
                 if(canvasMargin + currCtx.measureText(newLines[currLine]).width + xAdder > maxWidth){
@@ -287,11 +287,17 @@ function updateValue(userInput, currCanvas, currCtx,color){
 
 // FUNCTION - CHECK LINE WIDTH OF WORDS AND SPLIT INTO MULTIPLE LINES
 function checkAndSplitWords(fullWord){
-    let splitWords = fullWord.split(" ");
-
+    let splitWords = fullWord.trim().split(" ");
+    
     //studio and modifier should live on same line
     if(studioToggle && eventToggle){
         splitWords[splitWords.length-2] = splitWords[splitWords.length-2] + " " + splitWords[splitWords.length-1];
+        splitWords.pop();
+    }
+
+    //modifier and single-word event should live on same line
+    if(((eventToggle && !studioToggle) || (studioToggle && !eventToggle)) && splitWords.length == 2){
+        splitWords[0] = splitWords[0] + " " + splitWords[1];
         splitWords.pop();
     }
 
@@ -301,9 +307,7 @@ function checkAndSplitWords(fullWord){
         if(currLine < 3){
             if((ctx.measureText(toReturn[currLine] + splitWords[i]).width > imageWidth*4 && currLine > 0) || (ctx.measureText(toReturn[currLine] + splitWords[i]).width > (imageWidth*4 - (imageWidth + logoRightSpace)) && currLine == 0)){
                 console.log("Too Long");
-                console.log(ctx.measureText(toReturn[currLine] + splitWords[i]).width);
-                console.log(imageWidth*4 - (imageWidth + logoRightSpace));
-                console.log(imageWidth*4);
+
                 toReturn[currLine] = toReturn[currLine].trim();
                 currLine++;
                 i--; //don't go on to the next one if it doesn't fit
@@ -328,6 +332,7 @@ function checkAndSplitWords(fullWord){
         }
         else{
             toReturn[j] = toReturn[j].trim();
+            break;
         }
     }
     return toReturn;
