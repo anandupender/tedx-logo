@@ -30,7 +30,7 @@ let canvasWidth = 2920;
 let canvasHeight = 1200;
 let scaleFactor = 4;
 let canvasMargin = 30;
-let letterSpacing = -1;
+let letterSpacing = -2;
 
 // GLOBAL CONSTANTS - CANVAS IMAGE
 const xPos = 50;
@@ -53,7 +53,6 @@ const tipBox = document.querySelector("#tipBox");
 const tipMultiWord = "<strong>Tip:</strong> Multi-word event names start on the second line";
 const tipWordWrap = "<strong>Tip:</strong> When your name gets too long, it wraps to the next line";
 const tipFinal = "<strong>Tip:</strong> There can be a maximum of three lines of event name text";
-const tipLong = "<strong>Tip:</strong> The first word can have 15 characters maximum";
 const tipTooLong = "<strong>Tip:</strong> Your event name is too long or has a word that is too long";
 
 // GLOBAL VARIABLES - USER INPUT
@@ -114,7 +113,7 @@ function createCanvas(){
 // FUNCTION - GET USER EVENT NAME INPUT AND FILTER OUT INPROPER CHARACTERS
 function prepareUserInput(){
     input.addEventListener('input', () => {
-        input.value = input.value.replace(/[^a-zA-Z ]/g, "")    //do not allow special characters
+        input.value = input.value.replace(/[-!$%^&*()_+@|~=`\\#{}\[\]:";'<>?,.\/\d]*/g, "")    //do not allow special characters
         if(input.value != ""){
             demoToggle = false; 
         }
@@ -125,20 +124,24 @@ function prepareUserInput(){
         }
         firstTime = false;
 
-        var containsBad = false;
-        var splitWords = input.value.split(" ");
-        for(var i = 0; i < splitWords.length;i++){
-            if(badWords.includes(splitWords[i])){
-                containsBad = true;
-            }
-        }
+        // FEATURE: TRY TO REMOVE BAD WORDS BUT HAS NUANCED PROBLEM OF NOT ALLOWING CERTAIN NAMES
+        // EX: IT BLOCKS "ASS" AND THEREFORE "ASSATEAGUE ISLAND"
+        // var containsBad = false;
+        // var splitWords = input.value.split(" ");
+        // for(var i = 0; i < splitWords.length;i++){
+        //     if(badWords.includes(splitWords[i])){
+        //         containsBad = true;
+        //     }
+        // }
 
-        if(containsBad){
-            input.value = input.value.substring(0, input.value.length - 1);   //remove letter
-            alert("Please use this tool for event names only.");
-        }else{
-            updateValue(input.value, canvas, ctx,"black");
-        }
+        // if(containsBad){
+        //     input.value = input.value.substring(0, input.value.length - 1);   //remove letter
+        //     alert("Please use this tool for event names only.");
+        // }else{
+        //     updateValue(input.value, canvas, ctx,"black");
+        // }
+
+        updateValue(input.value, canvas, ctx,"black");
 
         if(input.value.toLowerCase().includes(easter2.name)){
             window.open(easter2.url, '_blank');
@@ -173,13 +176,12 @@ function updateValue(userInput, currCanvas, currCtx,color){
     currCtx.drawImage(logo, canvasMargin, canvasMargin,imageWidth,imageHeight);
 
     currCtx.fillStyle = textColor;
-    let newLines = checkAndSplitWords(fullInput);
-    console.log(newLines);
-    let firstLine = false;
+    let newLines = checkAndSplitWords(fullInput, currCtx);
 
     if(newLines != null){
         let maxWidth = 0;
         let maxHeight = 0;
+        console.log(newLines);
         for(let currLine = 0; currLine < newLines.length;currLine++){
 
             // If showing demo placeholders, decrease font color
@@ -194,7 +196,7 @@ function updateValue(userInput, currCanvas, currCtx,color){
                 let splitWords = newLines[currLine].split(" ");
                 let writtenWords = "";
                 for(let i = 0; i < splitWords.length;i++){
-                    let prevWidth = currCtx.measureText(writtenWords).width; //calculate width before changing font
+                    let prevWidth = currCtx.myMeasureText(writtenWords); //calculate width before changing font
                     if(i == splitWords.length - 1 || (studioToggle && eventToggle && (i == splitWords.length - 2))) { //bold modifiers
                         currCtx.font = "bold " + fontSize + " MainFont";
                         if(splitWords.length == 2){ //if only two modifiers on their own line
@@ -205,25 +207,23 @@ function updateValue(userInput, currCanvas, currCtx,color){
                         splitWords[i] += " ";
                     }
 
-                    // If only two words and less than 15 characters, put on first line
                     let xAdder = 0;
                     let yAdder = 0;
-                    if(splitWords.length == 2 && newLines[currLine].length < 15  && newLines.length == 1){ 
+
+                    if(currLine == 0){
                         xAdder = imageWidth + logoRightSpace;
                     }else{
-                        if(firstLine){
-                            yAdder = ((letterXHeight + xHeight)*(currLine))
-                        }else{
-                            yAdder = ((letterXHeight + xHeight)*(currLine+1))
-                        }
+                        yAdder = ((letterXHeight + xHeight)*(currLine));
                     }
-                    currCtx.renderText(splitWords[i], canvasMargin + prevWidth + xAdder, canvasMargin + imageHeight + yAdder, letterSpacing);
-                    // currCtx.fillText(splitWords[i], canvasMargin + prevWidth + xAdder, canvasMargin + imageHeight + yAdder);
+
+
+                    currCtx.renderText(splitWords[i], canvasMargin + prevWidth + xAdder, canvasMargin + imageHeight + yAdder);
+
                     writtenWords+=splitWords[i];
 
                     // Keep track of max text width
-                    if(canvasMargin + prevWidth + currCtx.measureText(splitWords[i]).width + xAdder > maxWidth){
-                        maxWidth = canvasMargin + prevWidth + currCtx.measureText(splitWords[i]).width + xAdder;
+                    if(canvasMargin + prevWidth + currCtx.myMeasureText(splitWords[i]) + xAdder > maxWidth){
+                        maxWidth = canvasMargin + prevWidth + currCtx.myMeasureText(splitWords[i]) + xAdder;
                     }
                     if(canvasMargin + imageHeight + yAdder > maxHeight){
                         maxHeight = canvasMargin + imageHeight + yAdder;
@@ -233,18 +233,20 @@ function updateValue(userInput, currCanvas, currCtx,color){
                 currCtx.font = "normal " + fontSize + " MainFont";
                 let xAdder = 0;
                 let yAdder = 0;
-                if(userInput.trim().indexOf(' ') != -1 || newLines[currLine].length > 15){ // multiple words or long word
-                    yAdder = ((letterXHeight + xHeight)*(currLine+1));
-                }else{
+
+                if(currLine == 0){
                     xAdder = imageWidth + logoRightSpace;
-                    firstLine = true;
                 }
-                currCtx.renderText(newLines[currLine], canvasMargin + xAdder, canvasMargin + imageHeight + yAdder, letterSpacing);
-                console.log("here");
+
+                yAdder = ((letterXHeight + xHeight)*(currLine));
+
+                if(newLines[currLine] != ""){
+                    currCtx.renderText(newLines[currLine], canvasMargin + xAdder, canvasMargin + imageHeight + yAdder);
+                }
 
                 // Keep track of max text width
-                if(canvasMargin + currCtx.measureText(newLines[currLine]).width + xAdder > maxWidth){
-                    maxWidth = canvasMargin + currCtx.measureText(newLines[currLine]).width + xAdder;
+                if(canvasMargin + currCtx.myMeasureText(newLines[currLine]) + xAdder > maxWidth){
+                    maxWidth = canvasMargin + currCtx.myMeasureText(newLines[currLine]) + xAdder;
                 }
                 if(yAdder + canvasMargin + imageHeight > maxHeight){
                     maxHeight = yAdder + canvasMargin + imageHeight;
@@ -283,12 +285,18 @@ function updateValue(userInput, currCanvas, currCtx,color){
         }
         showTip(futureTip);
     }
+
+    // Test Width Rectangle
+    // currCtx.fillRect(canvasMargin, 8, imageWidth, 5);
+    // currCtx.fillRect(canvasMargin, 0, imageWidth*4, 5);
+
 }
 
 // FUNCTION - CHECK LINE WIDTH OF WORDS AND SPLIT INTO MULTIPLE LINES
-function checkAndSplitWords(fullWord){
+function checkAndSplitWords(fullWord, currCtx){
+
     let splitWords = fullWord.trim().split(" ");
-    
+
     //studio and modifier should live on same line
     if(studioToggle && eventToggle){
         splitWords[splitWords.length-2] = splitWords[splitWords.length-2] + " " + splitWords[splitWords.length-1];
@@ -301,22 +309,27 @@ function checkAndSplitWords(fullWord){
         splitWords.pop();
     }
 
-    var toReturn = ["","",""];
+    // set default font before measuring
+    currCtx.font = "normal " + fontSize + " MainFont"
+
+    let toReturn = ["","","",""];
     let currLine = 0;
     for(var i = 0; i < splitWords.length;i++){
-        if(currLine < 3){
-            if((ctx.measureText(toReturn[currLine] + splitWords[i]).width > imageWidth*4 && currLine > 0) || (ctx.measureText(toReturn[currLine] + splitWords[i]).width > (imageWidth*4 - (imageWidth + logoRightSpace)) && currLine == 0)){
-                console.log("Too Long");
+        if(currLine < 4){
+            if(
+                ((ctx.myMeasureText((toReturn[currLine] + splitWords[i].trim())) > imageWidth*4) && currLine > 0) || 
+                ((ctx.myMeasureText((toReturn[currLine] + splitWords[i].trim())) > (imageWidth*4 - (imageWidth + logoRightSpace))) && currLine == 0)){
 
                 toReturn[currLine] = toReturn[currLine].trim();
                 currLine++;
                 i--; //don't go on to the next one if it doesn't fit
             }else{
-                if(splitWords[i][0] != undefined){
-                    toReturn[currLine] += splitWords[i][0].toUpperCase() + splitWords[i].slice(1, splitWords[i].length) + " ";
-                }else{
-                    toReturn[currLine] += splitWords[i] + " ";
+                console.log("second: ", i);
+                if((splitWords.length > 1 || (demoToggle && splitWords.length > 1)) && currLine == 0){
+                    currLine++;
                 }
+
+                toReturn[currLine] += splitWords[i] + " ";
             }
         }else{
             return null;  //too long, show nothing!
@@ -326,7 +339,7 @@ function checkAndSplitWords(fullWord){
     console.log(toReturn);
 
     //truncate array to just the lines with values
-    for(var j = 2; j >=0 ;j--){
+    for(var j = 3; j >=0 ;j--){
         if(toReturn[j] === "" || toReturn[j] === undefined || toReturn[j] === " "){
             toReturn.pop();
         }
@@ -335,6 +348,8 @@ function checkAndSplitWords(fullWord){
             break;
         }
     }
+    console.log(toReturn);
+
     return toReturn;
 }
 
@@ -391,7 +406,7 @@ function uploadToAirtable(value){
         {
         "Name": value,
         "Timestamp": d,
-        "Modifier": currEventModifier
+        "Modifier": currEventModifier + " " + currStudioModifier
         }
     }
 
@@ -414,14 +429,9 @@ function createConfetti(){
 // code from here http://jsfiddle.net/davidhong/hKbJ4/
 if (CanvasRenderingContext2D && !CanvasRenderingContext2D.renderText) {
     // @param  letterSpacing  {float}  CSS letter-spacing property
-    CanvasRenderingContext2D.prototype.renderText = function (text, x, y, letterSpacing) {
+    CanvasRenderingContext2D.prototype.renderText = function (text, x, y) {
         if (!text || typeof text !== 'string' || text.length === 0) {
             return;
-        }
-        
-        // letterSpacing of 0 means normal letter-spacing
-        if (typeof letterSpacing === 'undefined') {
-            letterSpacing = 0;
         }
                 
         var characters = String.prototype.split.call(text, ''),
@@ -432,20 +442,33 @@ if (CanvasRenderingContext2D && !CanvasRenderingContext2D.renderText) {
         while (index < text.length) {
             current = characters[index++];
             this.fillText(current, currentPosition, y);
-            currentPosition += (this.measureText(current).width + letterSpacing);
+            if(current !== " "){
+                currentPosition += (this.myMeasureText(current) + letterSpacing);
+            }else{
+                currentPosition += (this.myMeasureText(current));
+            }
         }
     }
+}
+
+CanvasRenderingContext2D.prototype.myMeasureText = function (text) {
+    if(text === "" ){
+        return 0;
+    }
+    return this.measureText(text).width + (letterSpacing * (text.trim().length - 1));
 }
 
 // FUNCTION - HELPER TO ALLOW FOR RADIO BUTTONS TO BE UNSELECTED
 var options = document.querySelector("#modifiers").querySelectorAll('input[type="radio"]')
 for(var i = 0; i < options.length;i++){
     options[i].onclick = function(){
+        
+        // Unselecting
         if (this.previous) {
             this.checked = false;
             currEventModifier = "";
             eventToggle = false;
-        }else{
+        }else{ // Selecting
             eventToggle = true;
             currEventModifier = this.value.charAt(0).toUpperCase() +  this.value.slice(1);
  
@@ -460,8 +483,10 @@ for(var i = 0; i < options.length;i++){
 
         if(input.value != ""){
             updateValue(input.value,canvas,ctx,"black");
-            updateValue(input.value,canvas,ctx,"black");    //not sure why but I have to do it twice
+            // updateValue(input.value,canvas,ctx,"black");    //not sure why but I have to do it twice
         }
+        
+
         this.previous = this.checked;        
     }
 }
@@ -539,7 +564,6 @@ const easter2 = {name:"anandupender",url:"https://www.anandupender.com/"};
 const easter3 = {name:"home",url:"https://www.ted.com/"};
 
 // DEMO FEATURE: MAKE BUTTONS INTERACT WITH MOUSE POSITION
-
 // document.onmousemove = handleMouseMove;
 // let maxDist = 200;
 // var button = document.querySelector("#emoji")
