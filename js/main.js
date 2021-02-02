@@ -199,7 +199,7 @@ function updateValue(userInput, currCanvas, currCtx,color){
                     let prevWidth = currCtx.myMeasureText(writtenWords); //calculate width before changing font
                     if(i == splitWords.length - 1 || (studioToggle && eventToggle && (i == splitWords.length - 2))) { //bold modifiers
                         currCtx.font = "bold " + fontSize + " MainFont";
-                        if(splitWords.length == 2){ //if only two modifiers on their own line
+                        if(splitWords.length == 2 || (studioToggle && eventToggle)){ //if only two modifiers on their own line
                             splitWords[i] += " ";
                         }
                     }else{
