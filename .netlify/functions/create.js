@@ -8,6 +8,7 @@ exports.handler = function(event, context, callback) {
         base('Main').create([JSON.parse(event.body)]
             , function(err, records) {
                 if (err) { 
+                    console.log(err);
                     callback(err);
                 }
     
